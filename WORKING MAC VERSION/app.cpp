@@ -2,6 +2,7 @@
 #include "vector"
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+#include <SDL_image.h>
 #include <tuple>
 #include <memory>
 
@@ -74,6 +75,15 @@ std::shared_ptr<SDL_Texture> load_texture(std::shared_ptr<SDL_Renderer> renderer
 int main() {
     SDL_Init(SDL_INIT_EVERYTHING);
     {
+
+        if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
+        {
+            std::cout << "Could not create window: " << IMG_GetError( ) << std::endl;
+            return 1;
+        }
+         std::cout << "Gitara! " << std::endl;
+
+
         auto [window_p, renderer_p] = create_context();
         int gaming = true;
 
