@@ -6,6 +6,8 @@
 #include <tuple>
 #include <memory>
 
+#include "other.hpp"
+
 bool handle_events(SDL_Rect &rect){
     SDL_Event e;
     auto *key_state = SDL_GetKeyboardState(nullptr);
@@ -73,6 +75,7 @@ std::shared_ptr<SDL_Texture> load_texture(std::shared_ptr<SDL_Renderer> renderer
 }
 
 int main() {
+    MyFunc();
     SDL_Init(SDL_INIT_EVERYTHING);
     {
 
