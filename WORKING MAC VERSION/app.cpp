@@ -75,6 +75,7 @@ std::shared_ptr<SDL_Texture> load_texture(std::shared_ptr<SDL_Renderer> renderer
 }
 
 int main() {
+    MyFunc();
     SDL_Init(SDL_INIT_EVERYTHING);
     {
 
