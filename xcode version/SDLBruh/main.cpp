@@ -15,171 +15,147 @@
 // I coded this and got it working on  MacOS Monterey 12.4, using SDL 2.24.0 and compiled with Clang++
 
 #include <iostream>
+#include <tuple>
+#include <memory>
+#include "vector"
 #include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+
+std::pair<std::shared_ptr<SDL_Window>,std::shared_ptr<SDL_Renderer>> create_context()
+{
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_CreateWindowAndRenderer(640,480,SDL_WINDOW_SHOWN, &window, &renderer);
+
+    std::shared_ptr<SDL_Window> w (window, [](SDL_Window *window){
+        std::cout << "Destroy window" << std::endl;
+        SDL_DestroyWindow(window);
+    });
+
+    std::shared_ptr<SDL_Renderer> r (renderer, [](SDL_Renderer *renderer) {
+        std::cout << "Destroy renderer" << std::endl;
+        SDL_DestroyRenderer(renderer);
+    });
+
+    return {w,r};
+}
+
+std::shared_ptr<SDL_Texture> load_texture(std::shared_ptr<SDL_Renderer> renderer,std::string texture_name)
+{
+    std::cout << "path: " << SDL_GetBasePath() << std::endl;
+    
+    
+    auto surface = IMG_Load(("" + texture_name).c_str());
+    if(!surface)
+    {
+        throw std::invalid_argument(SDL_GetError());
+    }
+
+    SDL_SetColorKey(surface,SDL_TRUE, SDL_MapRGB(surface->format, 0x0ff,0x0,0x0ff));
+
+    auto texture = SDL_CreateTextureFromSurface(renderer.get(), surface);
+    if(!texture)
+    {
+        throw std::invalid_argument(SDL_GetError());
+    }
+
+    SDL_FreeSurface(surface);
+    return std::shared_ptr<SDL_Texture>(texture, [](auto *p){ SDL_DestroyTexture(p);});
+}
+
+bool handle_events(SDL_Rect &rect){
+    SDL_Event e;
+    auto *key_state = SDL_GetKeyboardState(nullptr);
+
+    while (SDL_PollEvent(&e) != 0) {
+        switch(e.type){
+            case SDL_QUIT:
+                std::cout << "Quit" << std::endl;
+                return false;
+            case SDL_KEYDOWN:
+                if(e.key.keysym.sym == SDLK_q)
+                {
+                    std::cout << "lag......" << std::endl;
+                    SDL_Delay(500);
+                }
+
+        }
+    }
+
+    if(key_state[SDL_SCANCODE_UP]) rect.y--;
+    if(key_state[SDL_SCANCODE_DOWN]) rect.y++;
+    if(key_state[SDL_SCANCODE_LEFT]) rect.x--;
+    if(key_state[SDL_SCANCODE_RIGHT]) rect.x++;
+
+    return true;
+}
 
 int main(int argc, char const *argv[])
 {
-    int resW = 1280;
-    int resH = 720;
-
-    SDL_Rect sdlRect;
-    sdlRect.w = resW/30;
-    sdlRect.h = resH/10;
-    sdlRect.x = resW/2 - sdlRect.w/2;
-    sdlRect.y = resH/2 - sdlRect.h/2;
-    int numPixelsToMovePerFrame = sdlRect.w/4;
-
-    bool upArrowDown = false;
-    bool leftArrowDown = false;
-    bool downArrowDown = false;
-    bool rightArrowDown = false;
-
-    SDL_Window *window = nullptr;
-    SDL_Renderer *renderer = nullptr;
-    bool appIsRunning = true;
-    
-    int numMillisToThrottle = 6;
-    Uint64 lastDrawTime = SDL_GetTicks64();
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cout << "SDL could not be initialized: " << SDL_GetError();
-    }
-    else
-    {
-        std::cout << "SDL video system is ready to go\n";
-    }
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "An SDL2 window",        // window title
-        SDL_WINDOWPOS_UNDEFINED, // initial x position
-        SDL_WINDOWPOS_UNDEFINED, // initial y position
-        resW,                     // width, in pixels
-        resH,                     // height, in pixels
-        SDL_WINDOW_SHOWN         // flags - see below
-    );
-
-    // Check that the window was successfully created
-    if (window == NULL)
-    {
-        // In the case that the window could not be made...
-        printf("Could not create window: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-    if (renderer == NULL)
-    {
-        // In the case that the renderer could not be made...
-        printf("Could not create renderer: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    //main game/app loop
-    while (appIsRunning)
-    {
-        //slowing things down a little, you can delete this if you like
-        while (SDL_GetTicks64() - lastDrawTime < numMillisToThrottle){}
-
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
+    //init all
+        if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         {
-            // Handle each specific event
-            if (event.type == SDL_QUIT)
+            std::cout << "SDL could not be initialized: " << SDL_GetError() << std::endl;
+            return 1;
+        }
+
+        if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
+        {
+            std::cout << "SDL_image could not be initialized: "<< IMG_GetError( ) << std::endl;
+            return 1;
+        }
+
+        auto [window_p, renderer_p] = create_context();
+        int gaming = true;
+
+        auto player = load_texture(renderer_p, "Sprites/player/idle/player-idle-1.png");
+
+        auto clouds = load_texture(renderer_p, "clouds.bmp");
+        auto background = load_texture(renderer_p, "background.bmp");
+
+        SDL_Rect rect = {10, 10, 300, 100};
+
+        auto prev_tick = SDL_GetTicks();
+        int frame_dropped = 0;
+        while (handle_events(rect)) {
+
+            if(!frame_dropped)
             {
-                appIsRunning = false;
+                SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
+
+                {
+
+                    int w,h;
+                    SDL_QueryTexture(clouds.get(),
+                                        NULL, NULL,
+                                        &w, &h);
+
+                    SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
+                    SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
+
+                    SDL_Rect player_rect = {50, 150,33*2,32*2 };
+                    SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &player_rect);
+                }
+
+
+
+                SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
+
+                SDL_RenderFillRect(renderer_p.get(), &rect);
+                SDL_RenderPresent(renderer_p.get());
             }
-            else if (event.type == SDL_KEYDOWN)
+
+            auto ticks = SDL_GetTicks();
+            if ((ticks - prev_tick) < 33)
             {
-                if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-                {
-                upArrowDown = true;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-                {
-                leftArrowDown = true;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-                {
-                downArrowDown = true;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-                {
-                rightArrowDown = true;
-                }
+                SDL_Delay(33 - (ticks - prev_tick));
+                frame_dropped = 0;
             }
-            else if (event.type == SDL_KEYUP)
-            {
-                if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-                {
-                upArrowDown = false;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-                {
-                leftArrowDown = false;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-                {
-                downArrowDown = false;
-                }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-                {
-                rightArrowDown = false;
-                }
+            else{
+                prev_tick += 33;
             }
         }
 
-        //move rectangle
-        if (upArrowDown)
-        {
-            sdlRect.y -= numPixelsToMovePerFrame;
-        }
-        if (leftArrowDown)
-        {
-            sdlRect.x -= numPixelsToMovePerFrame;
-        }
-        if (downArrowDown)
-        {
-            sdlRect.y += numPixelsToMovePerFrame;
-        }
-        if (rightArrowDown)
-        {
-            sdlRect.x += numPixelsToMovePerFrame;
-        }
-
-        //bounds checking and correction
-        if (sdlRect.x < 0)
-        {
-            sdlRect.x = 0;
-        }
-        else if (sdlRect.x + sdlRect.w - 1 >= resW)
-        {
-            sdlRect.x = resW - sdlRect.w;
-        }
-        if (sdlRect.y < 0)
-        {
-            sdlRect.y = 0;
-        }
-        else if (sdlRect.y + sdlRect.h - 1 >= resH)
-        {
-            sdlRect.y = resH - sdlRect.h;
-        }
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(renderer);
-
-        SDL_SetRenderDrawColor(renderer, 255, 105, 180, SDL_ALPHA_OPAQUE);
-        SDL_RenderFillRect(renderer, &sdlRect);
-        SDL_RenderPresent(renderer);
-        
-        lastDrawTime = SDL_GetTicks64();
-    }
-
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    std::cout << "exiting..." << std::endl;
-    SDL_Quit();
-    return 0;
+        SDL_Quit();
+        return 0;
 }
