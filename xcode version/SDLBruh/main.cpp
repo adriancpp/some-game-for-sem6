@@ -184,6 +184,23 @@ int main(int argc, char const *argv[])
             }
         }
     }
+    
+    //jest my tests
+//    for (const auto& row : tileMapGraphic) {
+//            for (const auto& element : row) {
+//                std::cout << element << " ";
+//            }
+//            std::cout << std::endl;
+//        }
+//
+//    for (int i = 0; i < tileMapGraphic.size(); i++) {
+//            for (int j = 0; j < tileMapGraphic[i].size(); j++) {
+//                if (tileMapGraphic[i][j] != "W") {
+//                    std::cout << tileMapGraphic[i][j] << " ";
+//                }
+//            }
+//            std::cout << std::endl;
+//        }
 
     
 
