@@ -17,9 +17,11 @@
 #include <iostream>
 #include <tuple>
 #include <memory>
-#include "vector"
+#include <vector>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
+#include "entity.hpp"
 
 std::pair<std::shared_ptr<SDL_Window>,std::shared_ptr<SDL_Renderer>> create_context()
 {
@@ -93,69 +95,187 @@ bool handle_events(SDL_Rect &rect){
 int main(int argc, char const *argv[])
 {
     //init all
-        if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    {
+        std::cout << "SDL could not be initialized: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
+    if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
+    {
+        std::cout << "SDL_image could not be initialized: "<< IMG_GetError( ) << std::endl;
+        return 1;
+    }
+
+    auto [window_p, renderer_p] = create_context();
+    //int gaming = true;
+
+    auto player = load_texture(renderer_p, "Sprites/player/idle/player-idle-1.png");
+
+    auto clouds = load_texture(renderer_p, "clouds.bmp");
+    auto background = load_texture(renderer_p, "Environment/back.png");
+    
+    auto envirnomentTileset = load_texture(renderer_p, "Environment/Tileset/tileset-sliced.png");
+
+    SDL_Rect rect = {10, 10, 100, 100};
+    
+    
+        //game part -- move it to other file in future
+            //map
+    
+    // rows: 10, cols: 5
+    std::vector<std::vector<std::string>> tileMapGraphic{
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {"#", "W","#", "#","#", " "," ", " "," ", " "},
+        {"#", " "," ", " ","#", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "}
+    };
+    
+    std::vector<std::vector<std::string>> tileMapCollision{
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {"#", "#","#", "#","#", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "}
+    };
+    
+    std::vector<std::vector<std::string>> tileMapObject{
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", "P","o", "o"," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "},
+        {" ", " "," ", " "," ", " "," ", " "," ", " "}
+    };
+    
+    
+    //transformMapsIntoObjects
+    
+    std::vector<Entity> entities;
+    
+    for(int row = 0; row < tileMapGraphic.size() ; row++)
+    {
+    
+        for(int column = 0; column < tileMapGraphic[row].size() ; column++)
         {
-            std::cout << "SDL could not be initialized: " << SDL_GetError() << std::endl;
-            return 1;
-        }
-
-        if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
-        {
-            std::cout << "SDL_image could not be initialized: "<< IMG_GetError( ) << std::endl;
-            return 1;
-        }
-
-        auto [window_p, renderer_p] = create_context();
-        int gaming = true;
-
-        auto player = load_texture(renderer_p, "Sprites/player/idle/player-idle-1.png");
-
-        auto clouds = load_texture(renderer_p, "clouds.bmp");
-        auto background = load_texture(renderer_p, "background.bmp");
-
-        SDL_Rect rect = {10, 10, 300, 100};
-
-        auto prev_tick = SDL_GetTicks();
-        int frame_dropped = 0;
-        while (handle_events(rect)) {
-
-            if(!frame_dropped)
+            if(tileMapGraphic[row][column] == "#")
             {
-                SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
+                Entity newEntity;
+                newEntity.x = column*64;
+                newEntity.y = row*64;
+                newEntity.w = 64;
+                newEntity.h = 64;
+                newEntity.entityType = Entity::GRAPHIC;
+                newEntity.entityModel = "tile0";
+                newEntity.rectFrom = {16, (368-16)-336, 16, 16 };
+                entities.push_back(newEntity);
+            }
+            else if(tileMapGraphic[row][column] == "W")
+            {
+                Entity newEntity;
+                newEntity.x = column*64;
+                newEntity.y = row*64;
+                newEntity.w = 64;
+                newEntity.h = 64;
+                newEntity.entityType = Entity::GRAPHIC;
+                newEntity.entityModel = "tile1";
+                newEntity.rectFrom = {16+32, (368-16)-336, 16, 16 };
+                entities.push_back(newEntity);
+            }
+        }
+    }
 
+    
+
+    auto prev_tick = SDL_GetTicks();
+    int frame_dropped = 0;
+    while (handle_events(rect)) {
+
+        if(!frame_dropped)
+        {
+            SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
+
+            {
+
+                int w,h;
+                SDL_QueryTexture(clouds.get(),
+                                    NULL, NULL,
+                                    &w, &h);
+
+                SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
+                SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
+                
+                //middle
+                // tileset graph
+                
+                for(int i = 0; i < entities.size() ; i++)
                 {
-
-                    int w,h;
-                    SDL_QueryTexture(clouds.get(),
-                                        NULL, NULL,
-                                        &w, &h);
-
-                    SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
-                    SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
-
-                    SDL_Rect player_rect = {50, 150,33*2,32*2 };
-                    SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &player_rect);
+                    if(entities[i].entityType == Entity::GRAPHIC)
+                    {
+                        SDL_Rect envirnomentTileset_rect = {entities[i].x, entities[i].y,entities[i].w, entities[i].h };
+                        
+                        if(entities[i].entityModel == "tile0")
+                        {
+                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                        }
+                        if(entities[i].entityModel == "tile1")
+                        {
+                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                        }
+                    }
                 }
-
-
-
-                SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
-
-                SDL_RenderFillRect(renderer_p.get(), &rect);
-                SDL_RenderPresent(renderer_p.get());
+                    
+//                for(int row = 0; row < tileMapGraphic.size() ; row++)
+//                {
+//
+//                    for(int column = 0; column < tileMapGraphic[row].size() ; column++)
+//                    {
+//                        if(tileMapGraphic[row][column] == "#")
+//                        {
+//                            SDL_Rect envirnomentTileset_rect = {column*64, row*64,16*4,16*4 };
+//                            SDL_Rect from = {16, (368-16)-336, 16, 16 };
+//                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &from, &envirnomentTileset_rect);
+//                        }
+//                        else if(tileMapGraphic[row][column] == "W")
+//                        {
+//                            SDL_Rect envirnomentTileset_rect = {column*64, row*64,16*4,16*4 };
+//                            SDL_Rect from = {16+32, (368-16)-336, 16, 16 };
+//                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &from, &envirnomentTileset_rect);
+//                        }
+//                        else if(tileMapGraphic[row][column] == "P")
+//                        {
+//                            SDL_Rect player_rect = {column*64, row*64,33*2,32*2 };
+//                            SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &player_rect);
+//                            //add class with tile name - where can store all data
+//                        }
+//                    }
+//                }
+                
+                //tileset object
+                //for()
+                
+                
             }
 
-            auto ticks = SDL_GetTicks();
-            if ((ticks - prev_tick) < 33)
-            {
-                SDL_Delay(33 - (ticks - prev_tick));
-                frame_dropped = 0;
-            }
-            else{
-                prev_tick += 33;
-            }
+
+
+            SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
+
+            SDL_RenderFillRect(renderer_p.get(), &rect);
+            SDL_RenderPresent(renderer_p.get());
         }
 
-        SDL_Quit();
-        return 0;
+        auto ticks = SDL_GetTicks();
+        if ((ticks - prev_tick) < 33)
+        {
+            SDL_Delay(33 - (ticks - prev_tick));
+            frame_dropped = 0;
+        }
+        else{
+            prev_tick += 33;
+        }
+    }
+
+    SDL_Quit();
+    return 0;
 }
