@@ -65,31 +65,8 @@ std::shared_ptr<SDL_Texture> load_texture(std::shared_ptr<SDL_Renderer> renderer
     return std::shared_ptr<SDL_Texture>(texture, [](auto *p){ SDL_DestroyTexture(p);});
 }
 
-bool handle_events(SDL_Rect &rect){
-    SDL_Event e;
-    auto *key_state = SDL_GetKeyboardState(nullptr);
-
-    while (SDL_PollEvent(&e) != 0) {
-        switch(e.type){
-            case SDL_QUIT:
-                std::cout << "Quit" << std::endl;
-                return false;
-            case SDL_KEYDOWN:
-                if(e.key.keysym.sym == SDLK_q)
-                {
-                    std::cout << "lag......" << std::endl;
-                    SDL_Delay(500);
-                }
-
-        }
-    }
-
-    if(key_state[SDL_SCANCODE_UP]) rect.y--;
-    if(key_state[SDL_SCANCODE_DOWN]) rect.y++;
-    if(key_state[SDL_SCANCODE_LEFT]) rect.x--;
-    if(key_state[SDL_SCANCODE_RIGHT]) rect.x++;
-
-    return true;
+bool handle_events(Entity* entity){
+    return false;
 }
 
 int main(int argc, char const *argv[])
@@ -118,181 +95,265 @@ int main(int argc, char const *argv[])
     auto envirnomentTileset = load_texture(renderer_p, "Environment/Tileset/tileset-sliced.png");
 
     SDL_Rect rect = {10, 10, 100, 100};
-    
-    
+
+
         //game part -- move it to other file in future
-            //map
-    
-    // rows: 10, cols: 5
-    std::vector<std::vector<std::string>> tileMapGraphic{
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {"#", "W","#", "#","#", " "," ", " "," ", " "},
-        {"#", " "," ", " ","#", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "}
-    };
-    
-    std::vector<std::vector<std::string>> tileMapCollision{
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {"#", "#","#", "#","#", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "}
-    };
-    
-    std::vector<std::vector<std::string>> tileMapObject{
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", "P","o", "o"," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "},
-        {" ", " "," ", " "," ", " "," ", " "," ", " "}
-    };
-    
-    
-    //transformMapsIntoObjects
-    
-    std::vector<Entity> entities;
-    
-    for(int row = 0; row < tileMapGraphic.size() ; row++)
-    {
-    
-        for(int column = 0; column < tileMapGraphic[row].size() ; column++)
+        //map
+
+        // rows: 10, cols: 5
+        std::vector<std::vector<std::string>> tileMapGraphic{
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " ","#", "#"},
+                {"#", "W","#", "#","#", " ","#", "#","#", "M"},
+                {"M", "M","M", "M","M", " ","M", "M","M", "M"},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "}
+        };
+
+        std::vector<std::vector<std::string>> tileMapCollision{
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {"#", "#","#", "#","#", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "}
+        };
+
+        std::vector<std::vector<std::string>> tileMapObject{
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", "P","o", "o"," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " "," ", " "}
+        };
+
+
+        //transformMapsIntoObjects
+
+        std::vector<Entity> entities;
+
+        int id = 0;
+
+        for(int row = 0; row < tileMapGraphic.size() ; row++)
         {
-            if(tileMapGraphic[row][column] == "#")
+            for(int column = 0; column < tileMapGraphic[row].size() ; column++)
             {
-                Entity newEntity;
-                newEntity.x = column*64;
-                newEntity.y = row*64;
-                newEntity.w = 64;
-                newEntity.h = 64;
-                newEntity.entityType = Entity::GRAPHIC;
-                newEntity.entityModel = "tile0";
-                newEntity.rectFrom = {16, (368-16)-336, 16, 16 };
-                entities.push_back(newEntity);
-            }
-            else if(tileMapGraphic[row][column] == "W")
-            {
-                Entity newEntity;
-                newEntity.x = column*64;
-                newEntity.y = row*64;
-                newEntity.w = 64;
-                newEntity.h = 64;
-                newEntity.entityType = Entity::GRAPHIC;
-                newEntity.entityModel = "tile1";
-                newEntity.rectFrom = {16+32, (368-16)-336, 16, 16 };
-                entities.push_back(newEntity);
+                if(tileMapGraphic[row][column] == "#")
+                {
+                    Entity newEntity;
+                    newEntity.id = id;
+                    newEntity.setX(column*64);
+                    newEntity.y = row*64;
+                    newEntity.w = 64;
+                    newEntity.h = 64;
+                    newEntity.entityType = Entity::GRAPHIC;
+                    newEntity.entityModel = "tile0";
+                    newEntity.rectFrom = {16, (368-16)-336, 16, 16 };
+                    entities.push_back(newEntity);
+                }
+                else if(tileMapGraphic[row][column] == "W")
+                {
+                    Entity newEntity;
+                    newEntity.id = id;
+                    newEntity.setX(column*64);
+                    newEntity.y = row*64;
+                    newEntity.w = 64;
+                    newEntity.h = 64;
+                    newEntity.entityType = Entity::GRAPHIC;
+                    newEntity.entityModel = "tile1";
+                    newEntity.rectFrom = {16+32, (368-16)-336, 16, 16 };
+                    entities.push_back(newEntity);
+                }
+                else if(tileMapGraphic[row][column] == "M")
+                {
+                    Entity newEntity;
+                    newEntity.id = id;
+                    newEntity.setX(column*64);
+                    newEntity.y = row*64;
+                    newEntity.w = 64;
+                    newEntity.h = 64;
+                    newEntity.entityType = Entity::GRAPHIC;
+                    newEntity.entityModel = "tile2";
+                    newEntity.rectFrom = {16, (368-16)-336+32, 16, 16 };
+                    entities.push_back(newEntity);
+                }
+                id++;
             }
         }
-    }
-    
-    //jest my tests
-//    for (const auto& row : tileMapGraphic) {
-//            for (const auto& element : row) {
-//                std::cout << element << " ";
-//            }
-//            std::cout << std::endl;
-//        }
-//
-//    for (int i = 0; i < tileMapGraphic.size(); i++) {
-//            for (int j = 0; j < tileMapGraphic[i].size(); j++) {
-//                if (tileMapGraphic[i][j] != "W") {
-//                    std::cout << tileMapGraphic[i][j] << " ";
-//                }
-//            }
-//            std::cout << std::endl;
-//        }
 
+        std::vector<std::unique_ptr<Entity>> elementListObjects;
     
 
-    auto prev_tick = SDL_GetTicks();
-    int frame_dropped = 0;
-    while (handle_events(rect)) {
+        id = 0;
 
-        if(!frame_dropped)
+        int playerId = 0;
+
+        for(int row = 0; row < tileMapObject.size() ; row++)
         {
-            SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
-
+            for(int column = 0; column < tileMapObject[row].size() ; column++)
             {
 
-                int w,h;
-                SDL_QueryTexture(clouds.get(),
-                                    NULL, NULL,
-                                    &w, &h);
-
-                SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
-                SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
-                
-                //middle
-                // tileset graph
-                
-                for(int i = 0; i < entities.size() ; i++)
+                if(tileMapObject[row][column] == "P")
                 {
-                    if(entities[i].entityType == Entity::GRAPHIC)
-                    {
-                        SDL_Rect envirnomentTileset_rect = {entities[i].x, entities[i].y,entities[i].w, entities[i].h };
-                        
-                        if(entities[i].entityModel == "tile0")
+                    std::unique_ptr<Entity> newEntity = std::make_unique<Entity>();
+                    newEntity->id = id;
+                    newEntity->entityType = Entity::OBJECT;
+                    newEntity->entityModel = "player";
+                    newEntity->setX(10);
+                    newEntity->cord = {
+                        column*64,
+                        row*64,
+                        33*2,
+                        32*2
+                    };
+                    elementListObjects.emplace_back(std::move(newEntity));
+                
+                    
+                    playerId = id;
+                    id+=1;
+                }
+            
+            }
+        }
+    std::cout << "player id: " << playerId <<  std::endl;
+    std::cout << "id: " << id <<  std::endl;
+    
+    elementListObjects[0]->setX(20);
+    std::cout << "X: " << elementListObjects[0]->getX() <<  std::endl;
+    elementListObjects[0]->setX(30);
+        auto prev_tick = SDL_GetTicks();
+        int frame_dropped = 0;
+    
+        SDL_Event e;
+    auto *key_state = SDL_GetKeyboardState(nullptr);
+    bool gaming = true;
+    
+    
+        while (gaming) {
+            
+            //*key_state = SDL_GetKeyboardState(nullptr);
+            while (SDL_PollEvent(&e) != 0) {
+                switch(e.type){
+                    case SDL_QUIT:
+                        std::cout << "Quit" << std::endl;
+                        gaming = false;
+                        break;
+                    case SDL_KEYDOWN:
+                        if(e.key.keysym.sym == SDLK_q)
                         {
-                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                            std::cout << "lag......" << std::endl;
+                            SDL_Delay(500);
                         }
-                        if(entities[i].entityModel == "tile1")
+
+                }
+            }
+            
+            //player entity
+
+//            if(key_state[SDL_SCANCODE_UP]) elementListObjects[playerId].y--;
+//            if(key_state[SDL_SCANCODE_DOWN]) elementListObjects[playerId].y++;
+//            if(key_state[SDL_SCANCODE_LEFT]) elementListObjects[playerId].x--;
+            if(key_state[SDL_SCANCODE_RIGHT])
+            {
+                elementListObjects[0]->setX(elementListObjects[0]->getX()+10);
+                elementListObjects[0]->cord.x+=10;
+                //std::cout << "X: " << elementListObjects[playerId]->x <<  std::endl;
+            }
+
+            if(!frame_dropped)
+            {
+                SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
+
+                {
+
+                    int w,h;
+                    SDL_QueryTexture(clouds.get(),
+                                     NULL, NULL,
+                                     &w, &h);
+
+                    SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
+                    SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
+
+                    //middle
+                    // tileset graph
+
+                    for(int i = 0; i < entities.size() ; i++)
+                    {
+                        if(entities[i].entityType == Entity::GRAPHIC)
                         {
-                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                            SDL_Rect envirnomentTileset_rect = {entities[i].getX(), entities[i].y,entities[i].w, entities[i].h };
+
+                            if(entities[i].entityModel == "tile0")
+                            {
+                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                            }
+                            if(entities[i].entityModel == "tile1")
+                            {
+                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                            }
+                            if(entities[i].entityModel == "tile2")
+                            {
+                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
+                            }
                         }
                     }
-                }
+
+                    for(int i = 0; i < elementListObjects.size() ; i++)
+                    {
+                        if(elementListObjects[i]->entityType == Entity::OBJECT)
+                        {
+
+                            if(elementListObjects[i]->entityModel == "player")
+                            {
+                                std::cout << "X: " << elementListObjects[i]->getX() <<  std::endl;
+                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &elementListObjects[i]->cord);
+                            }
+
+                        }
+                    }
                     
-//                for(int row = 0; row < tileMapGraphic.size() ; row++)
-//                {
+//                    for (const auto obj : elementListObjects) {
+//                        if(obj->entityType == Entity::OBJECT)
+//                        {
 //
-//                    for(int column = 0; column < tileMapGraphic[row].size() ; column++)
-//                    {
-//                        if(tileMapGraphic[row][column] == "#")
-//                        {
-//                            SDL_Rect envirnomentTileset_rect = {column*64, row*64,16*4,16*4 };
-//                            SDL_Rect from = {16, (368-16)-336, 16, 16 };
-//                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &from, &envirnomentTileset_rect);
-//                        }
-//                        else if(tileMapGraphic[row][column] == "W")
-//                        {
-//                            SDL_Rect envirnomentTileset_rect = {column*64, row*64,16*4,16*4 };
-//                            SDL_Rect from = {16+32, (368-16)-336, 16, 16 };
-//                            SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &from, &envirnomentTileset_rect);
-//                        }
-//                        else if(tileMapGraphic[row][column] == "P")
-//                        {
-//                            SDL_Rect player_rect = {column*64, row*64,33*2,32*2 };
-//                            SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &player_rect);
-//                            //add class with tile name - where can store all data
+//                            if(obj->entityModel == "player")
+//                            {
+//
+//                                std::cout << "X: " << obj->getX() <<  std::endl;
+//                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &obj->cord);
+//                            }
+//
 //                        }
 //                    }
-//                }
-                
-                //tileset object
-                //for()
-                
-                
+
+                }
+
+
+
+                //SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
+
+                //SDL_RenderFillRect(renderer_p.get(), &rect);
+                SDL_RenderPresent(renderer_p.get());
             }
 
-
-
-            SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
-
-            SDL_RenderFillRect(renderer_p.get(), &rect);
-            SDL_RenderPresent(renderer_p.get());
+            auto ticks = SDL_GetTicks();
+            if ((ticks - prev_tick) < 33)
+            {
+                SDL_Delay(33 - (ticks - prev_tick));
+                frame_dropped = 0;
+            }
+            else{
+                prev_tick += 33;
+            }
         }
 
-        auto ticks = SDL_GetTicks();
-        if ((ticks - prev_tick) < 33)
-        {
-            SDL_Delay(33 - (ticks - prev_tick));
-            frame_dropped = 0;
-        }
-        else{
-            prev_tick += 33;
-        }
+        SDL_Quit();
+        return 0;
     }
-
-    SDL_Quit();
-    return 0;
-}

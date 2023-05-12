@@ -50,7 +50,20 @@ bool Entity::isCollision( SDL_Rect newCoordinates, std::vector<std::vector<std::
 }
 
 
-void Entity::move()
+Entity Entity::move(int x, int y)
 {
+    this->x += x;
+    this->y += y;
     
+    return *this;
 }
+
+// Getter for x
+    int Entity::getX() const {
+        return x;
+    }
+
+    // Setter for x
+    void Entity::setX(int newX) {
+        this->x = newX;
+    }

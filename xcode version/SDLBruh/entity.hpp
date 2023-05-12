@@ -20,10 +20,12 @@ class Entity
 public:
     Entity();
     bool isCollision( SDL_Rect newCoordinates, std::vector<std::vector<std::string>> collisionMap );
-    void move();
+    Entity move(int x, int y);
     
 public:
-    int x, y, w, h;
+    int id;
+
+    int y, w, h;
     int speed;
     enum entityTypes
     {
@@ -34,7 +36,13 @@ public:
     entityTypes entityType;
     std::string entityModel;
     SDL_Rect rectFrom;
+    SDL_Rect cord;
     
+    
+    int getX() const;
+    void setX(int newX);
+    
+private:
+    int x;
 };
-
 #endif /* entity_hpp */
