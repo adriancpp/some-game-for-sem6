@@ -88,11 +88,10 @@ int main(int argc, char const *argv[])
     //int gaming = true;
 
     auto player = load_texture(renderer_p, "Sprites/player/idle/player-idle-1.png");
-
     auto clouds = load_texture(renderer_p, "clouds.bmp");
     auto background = load_texture(renderer_p, "Environment/back.png");
-    
     auto envirnomentTileset = load_texture(renderer_p, "Environment/Tileset/tileset-sliced.png");
+    auto gem_Texture = load_texture(renderer_p, "Sprites/Items/gem/gem-1.png");
 
     SDL_Rect rect = {10, 10, 100, 100};
 
@@ -217,6 +216,22 @@ int main(int argc, char const *argv[])
                     playerId = id;
                     id++;
                 }
+                if(tileMapObject[row][column] == "o")
+                {
+                    Entity newEntity;
+                    newEntity.id = id;
+                    newEntity.entityType = Entity::OBJECT;
+                    newEntity.entityModel = "gem";
+                    newEntity.cord = {
+                        (column*64)+16,
+                        (row*64)+16,
+                        32,
+                        32
+                    };
+                    elementListObjects.emplace_back(newEntity);
+                
+                    id++;
+                }
                 
             
             }
@@ -260,6 +275,9 @@ int main(int argc, char const *argv[])
     bool gaming = true;
     
     
+    //fun
+    bool gemGravity = false;
+    
         while (gaming)
         {
             
@@ -275,6 +293,13 @@ int main(int argc, char const *argv[])
                         {
                             std::cout << "lag......" << std::endl;
                             SDL_Delay(500);
+                        }
+                        else if(e.key.keysym.sym == SDLK_g)
+                        {
+                            if(gemGravity==false)
+                                gemGravity=true;
+                            else
+                                gemGravity=false;
                         }
 
                 }
@@ -350,6 +375,46 @@ int main(int argc, char const *argv[])
                                 
                                 
                             }
+                            if(elementListObjects[i].entityModel == "gem" && gemGravity == true)
+                            {
+                                //if no collision in Y - move player down;
+                                
+                                bool playerBottomCollision = false;
+                                //check collisions
+                                for(int j = 0; j < elementListCollision.size() ; j++)
+                                {
+                                    float r1x = elementListObjects[i].cord.x;
+                                    float r1y = elementListObjects[i].cord.y+1;
+                                    float r1w = elementListObjects[i].cord.w;
+                                    float r1h = elementListObjects[i].cord.h;
+                                    
+                                    float r2x = elementListCollision[j].cord.x;
+                                    float r2y = elementListCollision[j].cord.y;
+                                    float r2w = elementListCollision[j].cord.w;
+                                    float r2h = elementListCollision[j].cord.h;
+                                    
+                                    std::cout << j << std::endl;
+                                    
+                                    if (r1x + r1w >= r2x &&
+                                          r1x <= r2x + r2w &&
+                                          r1y + r1h >= r2y &&
+                                          r1y <= r2y + r2h)
+                                    {
+                                        //collision true
+                                        playerBottomCollision = true;
+                                        
+                                    }
+                                }
+                                
+                                if(playerBottomCollision == false)
+                                {
+                                    //move player down
+                                    elementListObjects[i].cord.y += 1;
+                                }
+                                
+                                
+                                
+                            }
                         }
                     }
                 }
@@ -398,6 +463,10 @@ int main(int argc, char const *argv[])
                             if(elementListObjects[i].entityModel == "player")
                             {
                                 SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord);
+                            }
+                            if(elementListObjects[i].entityModel == "gem")
+                            {
+                                SDL_RenderCopy(renderer_p.get(), gem_Texture.get(), nullptr, &elementListObjects[i].cord);
                             }
 
                         }
