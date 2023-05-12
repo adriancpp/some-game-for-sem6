@@ -25,7 +25,7 @@ public:
 public:
     int id;
 
-    int y, w, h;
+    int x, y, w, h;
     int speed;
     enum entityTypes
     {
@@ -41,8 +41,5 @@ public:
     
     int getX() const;
     void setX(int newX);
-    
-private:
-    int x;
 };
 #endif /* entity_hpp */

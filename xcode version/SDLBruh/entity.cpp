@@ -57,13 +57,3 @@ Entity Entity::move(int x, int y)
     
     return *this;
 }
-
-// Getter for x
-    int Entity::getX() const {
-        return x;
-    }
-
-    // Setter for x
-    void Entity::setX(int newX) {
-        this->x = newX;
-    }

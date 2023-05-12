@@ -107,8 +107,8 @@ int main(int argc, char const *argv[])
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " ","#", "#"},
-                {"#", "W","#", "#","#", " ","#", "#","#", "M"},
-                {"M", "M","M", "M","M", " ","M", "M","M", "M"},
+                {"#", "W","#", "#","#", " "," ", "#","#", "M"},
+                {"M", "M","M", "M","M", " ","#", "M","M", "M"},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "}
         };
 
@@ -117,9 +117,9 @@ int main(int argc, char const *argv[])
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {"#", "#","#", "#","#", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
+                {" ", " "," ", " "," ", " "," ", " ","#", "#"},
+                {"#", "#","#", "#","#", " "," ", "#","#", "#"},
+                {"#", "#","#", "#","#", " ","#", "#","#", "#"},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "}
         };
 
@@ -127,8 +127,8 @@ int main(int argc, char const *argv[])
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", "P","o", "o"," ", " "," ", " "," ", " "},
+                {" ", "P"," ", " "," ", " "," ", " "," ", " "},
+                {" ", " ","o", "o"," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "}
@@ -149,7 +149,7 @@ int main(int argc, char const *argv[])
                 {
                     Entity newEntity;
                     newEntity.id = id;
-                    newEntity.setX(column*64);
+                    newEntity.x = column*64;
                     newEntity.y = row*64;
                     newEntity.w = 64;
                     newEntity.h = 64;
@@ -162,7 +162,7 @@ int main(int argc, char const *argv[])
                 {
                     Entity newEntity;
                     newEntity.id = id;
-                    newEntity.setX(column*64);
+                    newEntity.x = column*64;
                     newEntity.y = row*64;
                     newEntity.w = 64;
                     newEntity.h = 64;
@@ -175,7 +175,7 @@ int main(int argc, char const *argv[])
                 {
                     Entity newEntity;
                     newEntity.id = id;
-                    newEntity.setX(column*64);
+                    newEntity.x = column*64;
                     newEntity.y = row*64;
                     newEntity.w = 64;
                     newEntity.h = 64;
@@ -188,8 +188,7 @@ int main(int argc, char const *argv[])
             }
         }
 
-        std::vector<std::unique_ptr<Entity>> elementListObjects;
-    
+        std::vector<Entity> elementListObjects;
 
         id = 0;
 
@@ -202,32 +201,57 @@ int main(int argc, char const *argv[])
 
                 if(tileMapObject[row][column] == "P")
                 {
-                    std::unique_ptr<Entity> newEntity = std::make_unique<Entity>();
-                    newEntity->id = id;
-                    newEntity->entityType = Entity::OBJECT;
-                    newEntity->entityModel = "player";
-                    newEntity->setX(10);
-                    newEntity->cord = {
+                    Entity newEntity;
+                    newEntity.id = id;
+                    newEntity.entityType = Entity::OBJECT;
+                    newEntity.entityModel = "player";
+                    newEntity.cord = {
                         column*64,
                         row*64,
                         33*2,
                         32*2
                     };
-                    elementListObjects.emplace_back(std::move(newEntity));
+                    elementListObjects.emplace_back(newEntity);
                 
                     
                     playerId = id;
-                    id+=1;
+                    id++;
                 }
+                
             
             }
         }
-    std::cout << "player id: " << playerId <<  std::endl;
-    std::cout << "id: " << id <<  std::endl;
     
-    elementListObjects[0]->setX(20);
-    std::cout << "X: " << elementListObjects[0]->getX() <<  std::endl;
-    elementListObjects[0]->setX(30);
+    std::vector<Entity> elementListCollision;
+
+    id = 0;
+
+    for(int row = 0; row < tileMapCollision.size() ; row++)
+    {
+        for(int column = 0; column < tileMapCollision[row].size() ; column++)
+        {
+            if(tileMapCollision[row][column] == "#")
+            {
+                Entity newEntity;
+                newEntity.id = id;
+                newEntity.entityType = Entity::COLLISION;
+                newEntity.cord = {
+                    column*64,
+                    row*64,
+                    33*2,
+                    32*2
+                };
+                elementListCollision.emplace_back(newEntity);
+
+                id++;
+            }
+            
+        
+        }
+    }
+    
+    elementListObjects[playerId].x = 20;
+
         auto prev_tick = SDL_GetTicks();
         int frame_dropped = 0;
     
@@ -236,7 +260,8 @@ int main(int argc, char const *argv[])
     bool gaming = true;
     
     
-        while (gaming) {
+        while (gaming)
+        {
             
             //*key_state = SDL_GetKeyboardState(nullptr);
             while (SDL_PollEvent(&e) != 0) {
@@ -257,18 +282,78 @@ int main(int argc, char const *argv[])
             
             //player entity
 
-//            if(key_state[SDL_SCANCODE_UP]) elementListObjects[playerId].y--;
-//            if(key_state[SDL_SCANCODE_DOWN]) elementListObjects[playerId].y++;
-//            if(key_state[SDL_SCANCODE_LEFT]) elementListObjects[playerId].x--;
+            if(key_state[SDL_SCANCODE_UP])
+            {
+                elementListObjects[playerId].cord.y -= 10;
+            }
+            if(key_state[SDL_SCANCODE_DOWN])
+            {
+                elementListObjects[playerId].cord.y += 10;
+            }
+            if(key_state[SDL_SCANCODE_LEFT])
+            {
+                elementListObjects[playerId].cord.x -= 10;
+            }
             if(key_state[SDL_SCANCODE_RIGHT])
             {
-                elementListObjects[0]->setX(elementListObjects[0]->getX()+10);
-                elementListObjects[0]->cord.x+=10;
-                //std::cout << "X: " << elementListObjects[playerId]->x <<  std::endl;
+                elementListObjects[playerId].cord.x += 10;
             }
+            
+        
 
             if(!frame_dropped)
             {
+                //physic
+                {
+                    //objects gravity
+                    for(int i = 0; i < elementListObjects.size() ; i++)
+                    {
+                        if(elementListObjects[i].entityType == Entity::OBJECT)
+                        {
+                            if(elementListObjects[i].entityModel == "player")
+                            {
+                                //if no collision in Y - move player down;
+                                
+                                bool playerBottomCollision = false;
+                                //check collisions
+                                for(int j = 0; j < elementListCollision.size() ; j++)
+                                {
+                                    float r1x = elementListObjects[playerId].cord.x;
+                                    float r1y = elementListObjects[playerId].cord.y+1;
+                                    float r1w = elementListObjects[playerId].cord.w;
+                                    float r1h = elementListObjects[playerId].cord.h;
+                                    
+                                    float r2x = elementListCollision[j].cord.x;
+                                    float r2y = elementListCollision[j].cord.y;
+                                    float r2w = elementListCollision[j].cord.w;
+                                    float r2h = elementListCollision[j].cord.h;
+                                    
+                                    std::cout << j << std::endl;
+                                    
+                                    if (r1x + r1w >= r2x &&
+                                          r1x <= r2x + r2w &&
+                                          r1y + r1h >= r2y &&
+                                          r1y <= r2y + r2h)
+                                    {
+                                        //collision true
+                                        playerBottomCollision = true;
+                                        
+                                    }
+                                }
+                                
+                                if(playerBottomCollision == false)
+                                {
+                                    //move player down
+                                    elementListObjects[playerId].cord.y += 1;
+                                }
+                                
+                                
+                                
+                            }
+                        }
+                    }
+                }
+                
                 SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
 
                 {
@@ -288,7 +373,7 @@ int main(int argc, char const *argv[])
                     {
                         if(entities[i].entityType == Entity::GRAPHIC)
                         {
-                            SDL_Rect envirnomentTileset_rect = {entities[i].getX(), entities[i].y,entities[i].w, entities[i].h };
+                            SDL_Rect envirnomentTileset_rect = {entities[i].x, entities[i].y,entities[i].w, entities[i].h };
 
                             if(entities[i].entityModel == "tile0")
                             {
@@ -307,39 +392,20 @@ int main(int argc, char const *argv[])
 
                     for(int i = 0; i < elementListObjects.size() ; i++)
                     {
-                        if(elementListObjects[i]->entityType == Entity::OBJECT)
+                        if(elementListObjects[i].entityType == Entity::OBJECT)
                         {
 
-                            if(elementListObjects[i]->entityModel == "player")
+                            if(elementListObjects[i].entityModel == "player")
                             {
-                                std::cout << "X: " << elementListObjects[i]->getX() <<  std::endl;
-                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &elementListObjects[i]->cord);
+                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord);
                             }
 
                         }
                     }
-                    
-//                    for (const auto obj : elementListObjects) {
-//                        if(obj->entityType == Entity::OBJECT)
-//                        {
-//
-//                            if(obj->entityModel == "player")
-//                            {
-//
-//                                std::cout << "X: " << obj->getX() <<  std::endl;
-//                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &obj->cord);
-//                            }
-//
-//                        }
-//                    }
+        
 
                 }
 
-
-
-                //SDL_SetRenderDrawColor(renderer_p.get(), 255, 100, 50, 255);
-
-                //SDL_RenderFillRect(renderer_p.get(), &rect);
                 SDL_RenderPresent(renderer_p.get());
             }
 
