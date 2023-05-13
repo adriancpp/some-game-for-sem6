@@ -204,6 +204,7 @@ int main(int argc, char const *argv[])
                     newEntity.id = id;
                     newEntity.entityType = Entity::OBJECT;
                     newEntity.entityModel = "player";
+                    newEntity.faceRight = true;
                     newEntity.cord = {
                         column*64,
                         row*64,
@@ -317,10 +318,12 @@ int main(int argc, char const *argv[])
             }
             if(key_state[SDL_SCANCODE_LEFT])
             {
+                elementListObjects[playerId].faceRight = false;
                 elementListObjects[playerId].cord.x -= 10;
             }
             if(key_state[SDL_SCANCODE_RIGHT])
             {
+                elementListObjects[playerId].faceRight = true;
                 elementListObjects[playerId].cord.x += 10;
             }
             
@@ -340,30 +343,22 @@ int main(int argc, char const *argv[])
                                 //if no collision in Y - move player down;
                                 
                                 bool playerBottomCollision = false;
+                                
+                                SDL_Rect newCord = {
+                                    elementListObjects[playerId].cord.x,
+                                    elementListObjects[playerId].cord.y+1,
+                                    elementListObjects[playerId].cord.w,
+                                    elementListObjects[playerId].cord.h
+                                };
                                 //check collisions
                                 for(int j = 0; j < elementListCollision.size() ; j++)
                                 {
-                                    float r1x = elementListObjects[playerId].cord.x;
-                                    float r1y = elementListObjects[playerId].cord.y+1;
-                                    float r1w = elementListObjects[playerId].cord.w;
-                                    float r1h = elementListObjects[playerId].cord.h;
-                                    
-                                    float r2x = elementListCollision[j].cord.x;
-                                    float r2y = elementListCollision[j].cord.y;
-                                    float r2w = elementListCollision[j].cord.w;
-                                    float r2h = elementListCollision[j].cord.h;
-                                    
-                                    std::cout << j << std::endl;
-                                    
-                                    if (r1x + r1w >= r2x &&
-                                          r1x <= r2x + r2w &&
-                                          r1y + r1h >= r2y &&
-                                          r1y <= r2y + r2h)
+                                    bool collision = elementListObjects[playerId].isCollision(newCord, elementListCollision[j].cord);
+                                    if(collision)
                                     {
-                                        //collision true
                                         playerBottomCollision = true;
-                                        
                                     }
+                                
                                 }
                                 
                                 if(playerBottomCollision == false)
@@ -377,33 +372,23 @@ int main(int argc, char const *argv[])
                             }
                             if(elementListObjects[i].entityModel == "gem" && gemGravity == true)
                             {
-                                //if no collision in Y - move player down;
-                                
                                 bool playerBottomCollision = false;
+                                
+                                SDL_Rect newCord = {
+                                    elementListObjects[i].cord.x,
+                                    elementListObjects[i].cord.y+1,
+                                    elementListObjects[i].cord.w,
+                                    elementListObjects[i].cord.h
+                                };
                                 //check collisions
                                 for(int j = 0; j < elementListCollision.size() ; j++)
                                 {
-                                    float r1x = elementListObjects[i].cord.x;
-                                    float r1y = elementListObjects[i].cord.y+1;
-                                    float r1w = elementListObjects[i].cord.w;
-                                    float r1h = elementListObjects[i].cord.h;
-                                    
-                                    float r2x = elementListCollision[j].cord.x;
-                                    float r2y = elementListCollision[j].cord.y;
-                                    float r2w = elementListCollision[j].cord.w;
-                                    float r2h = elementListCollision[j].cord.h;
-                                    
-                                    std::cout << j << std::endl;
-                                    
-                                    if (r1x + r1w >= r2x &&
-                                          r1x <= r2x + r2w &&
-                                          r1y + r1h >= r2y &&
-                                          r1y <= r2y + r2h)
+                                    bool collision = elementListObjects[i].isCollision(newCord, elementListCollision[j].cord);
+                                    if(collision)
                                     {
-                                        //collision true
                                         playerBottomCollision = true;
-                                        
                                     }
+                                
                                 }
                                 
                                 if(playerBottomCollision == false)
@@ -439,6 +424,7 @@ int main(int argc, char const *argv[])
                         if(entities[i].entityType == Entity::GRAPHIC)
                         {
                             SDL_Rect envirnomentTileset_rect = {entities[i].x, entities[i].y,entities[i].w, entities[i].h };
+                        
 
                             if(entities[i].entityModel == "tile0")
                             {
@@ -459,10 +445,21 @@ int main(int argc, char const *argv[])
                     {
                         if(elementListObjects[i].entityType == Entity::OBJECT)
                         {
-
+                                
                             if(elementListObjects[i].entityModel == "player")
                             {
-                                SDL_RenderCopy(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord);
+                                if(elementListObjects[i].faceRight == true)
+                                {
+                                    SDL_RendererFlip flipType = SDL_FLIP_NONE;
+                                    SDL_RenderCopyEx(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord, 0, NULL, flipType);
+                                }
+                                else
+                                {
+                                    SDL_RendererFlip flipType = SDL_FLIP_HORIZONTAL;
+                                    SDL_RenderCopyEx(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord, 0, NULL, flipType);
+                                }
+                            
+                                
                             }
                             if(elementListObjects[i].entityModel == "gem")
                             {

@@ -19,7 +19,7 @@ class Entity
 {
 public:
     Entity();
-    bool isCollision( SDL_Rect newCoordinates, std::vector<std::vector<std::string>> collisionMap );
+    bool isCollision( SDL_Rect cord1, SDL_Rect cord2 );
     Entity move(int x, int y);
     
 public:
@@ -37,6 +37,13 @@ public:
     std::string entityModel;
     SDL_Rect rectFrom;
     SDL_Rect cord;
+    
+    //physic
+    bool isFalling;
+    int maxJumpHeight;
+    
+    //texture
+    bool faceRight;
     
     
     int getX() const;

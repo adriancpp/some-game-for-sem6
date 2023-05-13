@@ -16,34 +16,26 @@ Entity::Entity()
     
 }
 
-bool Entity::isCollision( SDL_Rect newCoordinates, std::vector<std::vector<std::string>> collisionMap )
+bool Entity::isCollision( SDL_Rect cord1, SDL_Rect cord2 )
 {
     bool collision = false;
     
-    float r1x = newCoordinates.x;
-    float r1y = newCoordinates.y;
-    float r1w = newCoordinates.w;
-    float r1h = newCoordinates.h;
+    float r1x = cord1.x;
+    float r1y = cord1.y;
+    float r1w = cord1.w;
+    float r1h = cord1.h;
     
-    for(int row = 0; row < collisionMap.size() ; row++)
+    float r2x = cord2.x;
+    float r2y = cord2.y;
+    float r2w = cord2.w;
+    float r2h = cord2.h;
+    
+    if (r1x + r1w >= r2x &&
+          r1x <= r2x + r2w &&
+          r1y + r1h >= r2y &&
+          r1y <= r2y + r2h)
     {
-        for(int column = 0; column < collisionMap[row].size() ; column++)
-        {
-            float r2x = row*64;
-            float r2y = column*64;
-            float r2w = 64;
-            float r2h = 64;
-            
-            if (r1x + r1w >= r2x &&
-                  r1x <= r2x + r2w &&
-                  r1y + r1h >= r2y &&
-                  r1y <= r2y + r2h)
-            {
-                collision = true;
-                
-                //check if there is object like coin???
-            }
-        }
+        collision = true;
     }
 
     return collision;
