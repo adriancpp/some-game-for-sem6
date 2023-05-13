@@ -126,7 +126,7 @@ int main(int argc, char const *argv[])
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", "P"," ", " "," ", " "," ", " "," ", " "},
+                {" ", "P"," ", " "," ", " "," ", " "," ", "o"},
                 {" ", " ","o", "o"," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
@@ -205,6 +205,12 @@ int main(int argc, char const *argv[])
                     newEntity.entityType = Entity::OBJECT;
                     newEntity.entityModel = "player";
                     newEntity.faceRight = true;
+                    newEntity.isMovingLeft = false;
+                    newEntity.isMovingRight = false;
+                    newEntity.isFalling = true;
+                    newEntity.isRising = true;
+                    newEntity.maxJumpHeight = 100;
+                    newEntity.currentJumpHeigth = 100;
                     newEntity.cord = {
                         column*64,
                         row*64,
@@ -278,6 +284,7 @@ int main(int argc, char const *argv[])
     
     //fun
     bool gemGravity = false;
+    int collectedGems = 0;
     
         while (gaming)
         {
@@ -310,22 +317,29 @@ int main(int argc, char const *argv[])
 
             if(key_state[SDL_SCANCODE_UP])
             {
-                elementListObjects[playerId].cord.y -= 10;
+                //elementListObjects[playerId].cord.y -= 10;
+                if( elementListObjects[playerId].isFalling == false )
+                {
+                    elementListObjects[playerId].isRising = true;
+                }
+            }
+            else
+            {
+                
             }
             if(key_state[SDL_SCANCODE_DOWN])
             {
                 elementListObjects[playerId].cord.y += 10;
             }
             if(key_state[SDL_SCANCODE_LEFT])
-            {
-                elementListObjects[playerId].faceRight = false;
-                elementListObjects[playerId].cord.x -= 10;
-            }
+                elementListObjects[playerId].isMovingLeft = true;
+            else
+                elementListObjects[playerId].isMovingLeft = false;
+                
             if(key_state[SDL_SCANCODE_RIGHT])
-            {
-                elementListObjects[playerId].faceRight = true;
-                elementListObjects[playerId].cord.x += 10;
-            }
+                elementListObjects[playerId].isMovingRight = true;
+            else
+                elementListObjects[playerId].isMovingRight = false;
             
         
 
@@ -333,6 +347,23 @@ int main(int argc, char const *argv[])
             {
                 //physic
                 {
+                    
+                    //player jumping
+                    if(elementListObjects[playerId].isRising)
+                    {
+                        if(elementListObjects[playerId].currentJumpHeigth < elementListObjects[playerId].maxJumpHeight)
+                        {
+                            elementListObjects[playerId].currentJumpHeigth+=10;
+                            elementListObjects[playerId].cord.y-=10;
+                        }
+                        else
+                        {
+                            elementListObjects[playerId].isRising = false;
+                            elementListObjects[playerId].isFalling = true;
+                            elementListObjects[playerId].currentJumpHeigth=0;
+                        }
+                    }
+                    
                     //objects gravity
                     for(int i = 0; i < elementListObjects.size() ; i++)
                     {
@@ -364,8 +395,11 @@ int main(int argc, char const *argv[])
                                 if(playerBottomCollision == false)
                                 {
                                     //move player down
+                                    elementListObjects[playerId].isFalling = true;
                                     elementListObjects[playerId].cord.y += 1;
                                 }
+                                else
+                                    elementListObjects[playerId].isFalling = false;
                                 
                                 
                                 
@@ -401,6 +435,37 @@ int main(int argc, char const *argv[])
                                 
                             }
                         }
+                    }
+                    
+                
+                    
+                    //object moveing
+                    if(elementListObjects[playerId].isMovingRight)
+                    {
+                        elementListObjects[playerId].faceRight = true;
+                        elementListObjects[playerId].cord.x += 10;
+                    }
+                    if(elementListObjects[playerId].isMovingLeft)
+                    {
+                        elementListObjects[playerId].faceRight = false;
+                        elementListObjects[playerId].cord.x -= 10;
+                    }
+                }
+                
+                //collisions with object
+                {
+                    for(int j = 0; j < elementListObjects.size() ; j++)
+                    {
+                        bool collision = elementListObjects[playerId].isCollision(elementListObjects[playerId].cord, elementListObjects[j].cord);
+                        if(collision)
+                        {
+                            if(elementListObjects[j].entityModel == "gem")
+                            {
+                                collectedGems++;
+                                elementListObjects.erase(elementListObjects.begin() + j);
+                            }
+                        }
+                    
                     }
                 }
                 
@@ -470,6 +535,19 @@ int main(int argc, char const *argv[])
                     }
         
 
+                }
+                
+                // gui
+                {
+                    for(int a = 0 ; a < collectedGems; a++)
+                    {
+                        SDL_Rect gemGuiRect;
+                        gemGuiRect.x = 10+(26*a);
+                        gemGuiRect.y = 450;
+                        gemGuiRect.w = 28;
+                        gemGuiRect.h = 28;
+                        SDL_RenderCopy(renderer_p.get(), gem_Texture.get(), nullptr, &gemGuiRect);
+                    }
                 }
 
                 SDL_RenderPresent(renderer_p.get());

@@ -40,7 +40,11 @@ public:
     
     //physic
     bool isFalling;
+    bool isRising;
+    bool isMovingRight;
+    bool isMovingLeft;
     int maxJumpHeight;
+    int currentJumpHeigth;
     
     //texture
     bool faceRight;
