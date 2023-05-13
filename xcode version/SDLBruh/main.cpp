@@ -282,6 +282,8 @@ int main(int argc, char const *argv[])
     bool gaming = true;
     
     
+    int deltaTime =0;
+    
     //fun
     bool gemGravity = false;
     int collectedGems = 0;
@@ -442,13 +444,17 @@ int main(int argc, char const *argv[])
                     //object moveing
                     if(elementListObjects[playerId].isMovingRight)
                     {
+                        int s = deltaTime*0.2;
+                            
                         elementListObjects[playerId].faceRight = true;
-                        elementListObjects[playerId].cord.x += 10;
+                        elementListObjects[playerId].cord.x += s;
                     }
                     if(elementListObjects[playerId].isMovingLeft)
                     {
+                        int s = deltaTime*0.2;
+                        
                         elementListObjects[playerId].faceRight = false;
-                        elementListObjects[playerId].cord.x -= 10;
+                        elementListObjects[playerId].cord.x -= s;
                     }
                 }
                 
@@ -554,6 +560,7 @@ int main(int argc, char const *argv[])
             }
 
             auto ticks = SDL_GetTicks();
+            deltaTime = ticks - prev_tick;
             if ((ticks - prev_tick) < 33)
             {
                 SDL_Delay(33 - (ticks - prev_tick));
