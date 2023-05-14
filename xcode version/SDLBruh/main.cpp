@@ -329,10 +329,10 @@ int main(int argc, char const *argv[])
             {
                 
             }
-            if(key_state[SDL_SCANCODE_DOWN])
-            {
-                elementListObjects[playerId].cord.y += 10;
-            }
+//            if(key_state[SDL_SCANCODE_DOWN])
+//            {
+//                elementListObjects[playerId].cord.y += 10;
+//            }
             if(key_state[SDL_SCANCODE_LEFT])
                 elementListObjects[playerId].isMovingLeft = true;
             else
