@@ -283,6 +283,7 @@ int main(int argc, char const *argv[])
     
     
     int deltaTime =0;
+    float deltaTimeTest = 0;
     
     //fun
     bool gemGravity = false;
@@ -444,10 +445,13 @@ int main(int argc, char const *argv[])
                     //object moveing
                     if(elementListObjects[playerId].isMovingRight)
                     {
-                        int s = deltaTime*0.2;
+                        //int s = deltaTime*0.2;
+                        
+                        const float PLAYER_VELOCITY = 200.0f;
+                        float distanceToMove = PLAYER_VELOCITY * deltaTimeTest;
                             
                         elementListObjects[playerId].faceRight = true;
-                        elementListObjects[playerId].cord.x += s;
+                        elementListObjects[playerId].cord.x += static_cast<int>(distanceToMove);
                     }
                     if(elementListObjects[playerId].isMovingLeft)
                     {
@@ -561,6 +565,9 @@ int main(int argc, char const *argv[])
 
             auto ticks = SDL_GetTicks();
             deltaTime = ticks - prev_tick;
+            
+             deltaTimeTest = (ticks - prev_tick) / 1000.0f;
+            
             if ((ticks - prev_tick) < 33)
             {
                 SDL_Delay(33 - (ticks - prev_tick));
@@ -569,6 +576,8 @@ int main(int argc, char const *argv[])
             else{
                 prev_tick += 33;
             }
+            
+            
         }
 
         SDL_Quit();
