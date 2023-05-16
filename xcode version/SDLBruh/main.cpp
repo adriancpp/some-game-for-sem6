@@ -288,7 +288,7 @@ int main(int argc, char const *argv[])
     //fun
     bool gemGravity = false;
     int collectedGems = 0;
-    
+    Uint32 lastUpdate = SDL_GetTicks();
         while (gaming)
         {
             
@@ -441,14 +441,15 @@ int main(int argc, char const *argv[])
                     }
                     
                 
-                    
+                    Uint32 current = SDL_GetTicks();
+                    float dT = (current - lastUpdate) / 1000.0f;
                     //object moveing
                     if(elementListObjects[playerId].isMovingRight)
                     {
                         //int s = deltaTime*0.2;
                         
                         const float PLAYER_VELOCITY = 200.0f;
-                        float distanceToMove = PLAYER_VELOCITY * deltaTimeTest;
+                        float distanceToMove = PLAYER_VELOCITY * dT;
                             
                         elementListObjects[playerId].faceRight = true;
                         elementListObjects[playerId].cord.x += static_cast<int>(distanceToMove);
@@ -460,6 +461,7 @@ int main(int argc, char const *argv[])
                         elementListObjects[playerId].faceRight = false;
                         elementListObjects[playerId].cord.x -= s;
                     }
+                    lastUpdate = current;
                 }
                 
                 //collisions with object
