@@ -289,8 +289,27 @@ int main(int argc, char const *argv[])
     bool gemGravity = false;
     int collectedGems = 0;
     Uint32 lastUpdate = SDL_GetTicks();
+    
+    // test AAA.01 !!!==============
+    int poczatek;
+        int koniec;
+        int roznica;
+        float delay;
+        static const int klatka = 0;
+        static const int fps = 60;
+    
+    
+    int klatkaIn = 0;
+    float velY = 0;
+    //==================================
+    
+    
+    
+    
         while (gaming)
         {
+            poczatek = SDL_GetTicks(); //test AAA.01
+            klatkaIn++; //test AAA.01
             
             //*key_state = SDL_GetKeyboardState(nullptr);
             while (SDL_PollEvent(&e) != 0) {
@@ -317,6 +336,8 @@ int main(int argc, char const *argv[])
             }
             
             //player entity
+            
+            //======================================
 
             if(key_state[SDL_SCANCODE_UP])
             {
@@ -335,110 +356,28 @@ int main(int argc, char const *argv[])
 //                elementListObjects[playerId].cord.y += 10;
 //            }
             if(key_state[SDL_SCANCODE_LEFT])
-                elementListObjects[playerId].isMovingLeft = true;
-            else
-                elementListObjects[playerId].isMovingLeft = false;
+            {
+                            if( velY > -5 )
+                            {
+                                velY = velY - 0.6;
+                            }
+                        }
+            velY = velY * 0.45; //0.95
                 
             if(key_state[SDL_SCANCODE_RIGHT])
+            {
+                std::cout << elementListObjects[playerId].x << std::endl;
                 elementListObjects[playerId].isMovingRight = true;
+            }
+                
             else
                 elementListObjects[playerId].isMovingRight = false;
             
-        
+            elementListObjects[playerId].cord.x = elementListObjects[playerId].cord.x + velY*10;
 
-            if(!frame_dropped)
-            {
                 //physic
                 {
                     
-                    //player jumping
-                    if(elementListObjects[playerId].isRising)
-                    {
-                        if(elementListObjects[playerId].currentJumpHeigth < elementListObjects[playerId].maxJumpHeight)
-                        {
-                            elementListObjects[playerId].currentJumpHeigth+=10;
-                            elementListObjects[playerId].cord.y-=10;
-                        }
-                        else
-                        {
-                            elementListObjects[playerId].isRising = false;
-                            elementListObjects[playerId].isFalling = true;
-                            elementListObjects[playerId].currentJumpHeigth=0;
-                        }
-                    }
-                    
-                    //objects gravity
-                    for(int i = 0; i < elementListObjects.size() ; i++)
-                    {
-                        if(elementListObjects[i].entityType == Entity::OBJECT)
-                        {
-                            if(elementListObjects[i].entityModel == "player")
-                            {
-                                //if no collision in Y - move player down;
-                                
-                                bool playerBottomCollision = false;
-                                
-                                SDL_Rect newCord = {
-                                    elementListObjects[playerId].cord.x,
-                                    elementListObjects[playerId].cord.y+1,
-                                    elementListObjects[playerId].cord.w,
-                                    elementListObjects[playerId].cord.h
-                                };
-                                //check collisions
-                                for(int j = 0; j < elementListCollision.size() ; j++)
-                                {
-                                    bool collision = elementListObjects[playerId].isCollision(newCord, elementListCollision[j].cord);
-                                    if(collision)
-                                    {
-                                        playerBottomCollision = true;
-                                    }
-                                
-                                }
-                                
-                                if(playerBottomCollision == false)
-                                {
-                                    //move player down
-                                    elementListObjects[playerId].isFalling = true;
-                                    elementListObjects[playerId].cord.y += 1;
-                                }
-                                else
-                                    elementListObjects[playerId].isFalling = false;
-                                
-                                
-                                
-                            }
-                            if(elementListObjects[i].entityModel == "gem" && gemGravity == true)
-                            {
-                                bool playerBottomCollision = false;
-                                
-                                SDL_Rect newCord = {
-                                    elementListObjects[i].cord.x,
-                                    elementListObjects[i].cord.y+1,
-                                    elementListObjects[i].cord.w,
-                                    elementListObjects[i].cord.h
-                                };
-                                //check collisions
-                                for(int j = 0; j < elementListCollision.size() ; j++)
-                                {
-                                    bool collision = elementListObjects[i].isCollision(newCord, elementListCollision[j].cord);
-                                    if(collision)
-                                    {
-                                        playerBottomCollision = true;
-                                    }
-                                
-                                }
-                                
-                                if(playerBottomCollision == false)
-                                {
-                                    //move player down
-                                    elementListObjects[i].cord.y += 1;
-                                }
-                                
-                                
-                                
-                            }
-                        }
-                    }
                     
                 
                     Uint32 current = SDL_GetTicks();
@@ -538,46 +477,23 @@ int main(int argc, char const *argv[])
                             
                                 
                             }
-                            if(elementListObjects[i].entityModel == "gem")
-                            {
-                                SDL_RenderCopy(renderer_p.get(), gem_Texture.get(), nullptr, &elementListObjects[i].cord);
-                            }
 
                         }
                     }
         
 
                 }
-                
-                // gui
-                {
-                    for(int a = 0 ; a < collectedGems; a++)
-                    {
-                        SDL_Rect gemGuiRect;
-                        gemGuiRect.x = 10+(26*a);
-                        gemGuiRect.y = 450;
-                        gemGuiRect.w = 28;
-                        gemGuiRect.h = 28;
-                        SDL_RenderCopy(renderer_p.get(), gem_Texture.get(), nullptr, &gemGuiRect);
-                    }
-                }
 
                 SDL_RenderPresent(renderer_p.get());
-            }
-
-            auto ticks = SDL_GetTicks();
-            deltaTime = ticks - prev_tick;
             
-             deltaTimeTest = (ticks - prev_tick) / 1000.0f;
             
-            if ((ticks - prev_tick) < 33)
-            {
-                SDL_Delay(33 - (ticks - prev_tick));
-                frame_dropped = 0;
-            }
-            else{
-                prev_tick += 33;
-            }
+            koniec = SDL_GetTicks();
+                    roznica = koniec - poczatek;
+                    delay = ( 1000.0 /(float)fps) - roznica;
+                    if( delay > 0 )
+                    {
+                        SDL_Delay( delay );
+                    }
             
             
         }
