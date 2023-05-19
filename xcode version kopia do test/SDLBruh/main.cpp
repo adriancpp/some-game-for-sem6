@@ -357,11 +357,11 @@ int main(int argc, char const *argv[])
 //            }
             if(key_state[SDL_SCANCODE_LEFT])
             {
-                            if( velY > -5 )
-                            {
-                                velY = velY - 0.6;
-                            }
-                        }
+                if( velY > -5 )
+                {
+                    velY = velY - 0.6;
+                }
+            }
             velY = velY * 0.45; //0.95
                 
             if(key_state[SDL_SCANCODE_RIGHT])
@@ -488,12 +488,12 @@ int main(int argc, char const *argv[])
             
             
             koniec = SDL_GetTicks();
-                    roznica = koniec - poczatek;
-                    delay = ( 1000.0 /(float)fps) - roznica;
-                    if( delay > 0 )
-                    {
-                        SDL_Delay( delay );
-                    }
+            roznica = koniec - poczatek;
+            delay = ( 1000.0 /(float)fps) - roznica;
+            if( delay > 0 )
+            {
+                SDL_Delay( delay );
+            }
             
             
         }

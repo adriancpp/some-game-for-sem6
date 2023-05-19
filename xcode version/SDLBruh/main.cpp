@@ -274,7 +274,7 @@ int main(int argc, char const *argv[])
     
     elementListObjects[playerId].x = 20;
 
-        auto prev_tick = SDL_GetTicks();
+        //auto prev_tick = SDL_GetTicks();
         int frame_dropped = 0;
     
         SDL_Event e;
@@ -282,16 +282,29 @@ int main(int argc, char const *argv[])
     bool gaming = true;
     
     
-    int deltaTime =0;
+    //int deltaTime =0;
     float deltaTimeTest = 0;
     
     //fun
     bool gemGravity = false;
     int collectedGems = 0;
+    
+    //newTime
+    static const int fps = 60;
+    float delay;
+    int prev_tick;
+    int ticks;
+    int deltaTime;
+    //newPlayerVel
+    float velY = 0;
+    float velAddSpeed = 3;
+    float velMaxSpeed = 10;
+    float gForceSpeed = 1;
+    
     Uint32 lastUpdate = SDL_GetTicks();
         while (gaming)
         {
-            
+            prev_tick = SDL_GetTicks();
             //*key_state = SDL_GetKeyboardState(nullptr);
             while (SDL_PollEvent(&e) != 0) {
                 switch(e.type){
@@ -326,28 +339,39 @@ int main(int argc, char const *argv[])
                     elementListObjects[playerId].isRising = true;
                 }
             }
-            else
-            {
-                
-            }
+            
 //            if(key_state[SDL_SCANCODE_DOWN])
 //            {
 //                elementListObjects[playerId].cord.y += 10;
 //            }
+            velMaxSpeed = 8;
+            velAddSpeed = 2;
+            
             if(key_state[SDL_SCANCODE_LEFT])
-                elementListObjects[playerId].isMovingLeft = true;
-            else
-                elementListObjects[playerId].isMovingLeft = false;
+            {
+                if( velY > -velMaxSpeed )
+                {
+                    velY = velY - velAddSpeed;
+                }
+            }
                 
             if(key_state[SDL_SCANCODE_RIGHT])
-                elementListObjects[playerId].isMovingRight = true;
-            else
-                elementListObjects[playerId].isMovingRight = false;
-            
-        
-
-            if(!frame_dropped)
             {
+                if( velY < velMaxSpeed )
+                {
+                    velY = velY + velAddSpeed;
+                    //velY = velY + 0.6;
+                }
+            }
+            
+            std::cout << (int)velY << std::endl;
+            
+            
+            
+            elementListObjects[playerId].cord.x += (int)velY;
+            velY = velY * 0.65; //0.95
+            //SDL_Delay(100);
+
                 //physic
                 {
                     
@@ -356,6 +380,7 @@ int main(int argc, char const *argv[])
                     {
                         if(elementListObjects[playerId].currentJumpHeigth < elementListObjects[playerId].maxJumpHeight)
                         {
+                        
                             elementListObjects[playerId].currentJumpHeigth+=10;
                             elementListObjects[playerId].cord.y-=10;
                         }
@@ -378,9 +403,11 @@ int main(int argc, char const *argv[])
                                 
                                 bool playerBottomCollision = false;
                                 
+                                gForceSpeed+=0.45;
+                                
                                 SDL_Rect newCord = {
                                     elementListObjects[playerId].cord.x,
-                                    elementListObjects[playerId].cord.y+1,
+                                    elementListObjects[playerId].cord.y+(int)gForceSpeed,
                                     elementListObjects[playerId].cord.w,
                                     elementListObjects[playerId].cord.h
                                 };
@@ -399,10 +426,13 @@ int main(int argc, char const *argv[])
                                 {
                                     //move player down
                                     elementListObjects[playerId].isFalling = true;
-                                    elementListObjects[playerId].cord.y += 1;
+                                    elementListObjects[playerId].cord.y += (int)gForceSpeed;
                                 }
                                 else
+                                {
+                                    gForceSpeed = 1;
                                     elementListObjects[playerId].isFalling = false;
+                                }
                                 
                                 
                                 
@@ -563,22 +593,13 @@ int main(int argc, char const *argv[])
                 }
 
                 SDL_RenderPresent(renderer_p.get());
-            }
-
-            auto ticks = SDL_GetTicks();
+            
+            
+            ticks = SDL_GetTicks();
             deltaTime = ticks - prev_tick;
-            
-             deltaTimeTest = (ticks - prev_tick) / 1000.0f;
-            
-            if ((ticks - prev_tick) < 33)
-            {
-                SDL_Delay(33 - (ticks - prev_tick));
-                frame_dropped = 0;
-            }
-            else{
-                prev_tick += 33;
-            }
-            
+            delay = ( 1000.0 /(float)fps) - deltaTime;
+            if( delay > 0 )
+                SDL_Delay( delay );
             
         }
 
