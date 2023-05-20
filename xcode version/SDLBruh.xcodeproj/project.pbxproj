@@ -24,6 +24,7 @@
 		3AD939FB2A0A90920082C023 /* SDLBruhUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD939FA2A0A90920082C023 /* SDLBruhUITests.m */; };
 		3AD939FD2A0A90920082C023 /* SDLBruhUITestsLaunchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD939FC2A0A90920082C023 /* SDLBruhUITestsLaunchTests.m */; };
 		3AD93A0A2A0A91A50082C023 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD93A092A0A91A50082C023 /* main.cpp */; };
+		3AF732E12A18CB750033897C /* map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AF732DF2A18CB750033897C /* map.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,8 @@
 		3AD939FA2A0A90920082C023 /* SDLBruhUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDLBruhUITests.m; sourceTree = "<group>"; };
 		3AD939FC2A0A90920082C023 /* SDLBruhUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDLBruhUITestsLaunchTests.m; sourceTree = "<group>"; };
 		3AD93A092A0A91A50082C023 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3AF732DF2A18CB750033897C /* map.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = map.cpp; sourceTree = "<group>"; };
+		3AF732E02A18CB750033897C /* map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = map.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,8 @@
 				3AD93A092A0A91A50082C023 /* main.cpp */,
 				3A039D782A0CC8C900BF9313 /* entity.cpp */,
 				3A039D792A0CC8C900BF9313 /* entity.hpp */,
+				3AF732DF2A18CB750033897C /* map.cpp */,
+				3AF732E02A18CB750033897C /* map.hpp */,
 			);
 			path = SDLBruh;
 			sourceTree = "<group>";
@@ -321,6 +326,7 @@
 			files = (
 				3AD93A0A2A0A91A50082C023 /* main.cpp in Sources */,
 				3A039D7A2A0CC8C900BF9313 /* entity.cpp in Sources */,
+				3AF732E12A18CB750033897C /* map.cpp in Sources */,
 				3AD939DF2A0A90910082C023 /* ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

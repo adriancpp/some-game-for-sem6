@@ -22,6 +22,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #include "entity.hpp"
+#include "map.hpp"
 
 std::pair<std::shared_ptr<SDL_Window>,std::shared_ptr<SDL_Renderer>> create_context()
 {
@@ -274,16 +275,11 @@ int main(int argc, char const *argv[])
     
     elementListObjects[playerId].x = 20;
 
-        //auto prev_tick = SDL_GetTicks();
-        int frame_dropped = 0;
     
         SDL_Event e;
     auto *key_state = SDL_GetKeyboardState(nullptr);
     bool gaming = true;
     
-    
-    //int deltaTime =0;
-    float deltaTimeTest = 0;
     
     //fun
     bool gemGravity = false;
@@ -300,8 +296,7 @@ int main(int argc, char const *argv[])
     float velAddSpeed = 3;
     float velMaxSpeed = 10;
     float gForceSpeed = 1;
-    
-    Uint32 lastUpdate = SDL_GetTicks();
+
         while (gaming)
         {
             prev_tick = SDL_GetTicks();
@@ -340,10 +335,6 @@ int main(int argc, char const *argv[])
                 }
             }
             
-//            if(key_state[SDL_SCANCODE_DOWN])
-//            {
-//                elementListObjects[playerId].cord.y += 10;
-//            }
             velMaxSpeed = 8;
             velAddSpeed = 2;
             
@@ -353,6 +344,7 @@ int main(int argc, char const *argv[])
                 {
                     velY = velY - velAddSpeed;
                 }
+                elementListObjects[playerId].faceRight = false;
             }
                 
             if(key_state[SDL_SCANCODE_RIGHT])
@@ -362,9 +354,8 @@ int main(int argc, char const *argv[])
                     velY = velY + velAddSpeed;
                     //velY = velY + 0.6;
                 }
+                elementListObjects[playerId].faceRight = true;
             }
-            
-            std::cout << (int)velY << std::endl;
             
             
             
@@ -470,28 +461,14 @@ int main(int argc, char const *argv[])
                         }
                     }
                     
-                
-                    Uint32 current = SDL_GetTicks();
-                    float dT = (current - lastUpdate) / 1000.0f;
-                    //object moveing
-                    if(elementListObjects[playerId].isMovingRight)
-                    {
-                        //int s = deltaTime*0.2;
-                        
-                        const float PLAYER_VELOCITY = 200.0f;
-                        float distanceToMove = PLAYER_VELOCITY * dT;
-                            
-                        elementListObjects[playerId].faceRight = true;
-                        elementListObjects[playerId].cord.x += static_cast<int>(distanceToMove);
-                    }
-                    if(elementListObjects[playerId].isMovingLeft)
-                    {
-                        int s = deltaTime*0.2;
-                        
-                        elementListObjects[playerId].faceRight = false;
-                        elementListObjects[playerId].cord.x -= s;
-                    }
-                    lastUpdate = current;
+//                    if(elementListObjects[playerId].isMovingLeft)
+//                    {
+//                        int s = deltaTime*0.2;
+//
+//                        elementListObjects[playerId].faceRight = false;
+//                        elementListObjects[playerId].cord.x -= s;
+//                    }
+//                    lastUpdate = current;
                 }
                 
                 //collisions with object
