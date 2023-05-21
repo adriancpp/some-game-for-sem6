@@ -99,18 +99,10 @@ int main(int argc, char const *argv[])
 
         //game part -- move it to other file in future
         //map
-
-        // rows: 10, cols: 5
-        std::vector<std::vector<std::string>> tileMapGraphic{
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " ","#", "#"},
-                {"#", "W","#", "#","#", " "," ", "#","#", "M"},
-                {"M", "M","M", "M","M", " ","#", "M","M", "M"},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "}
-        };
+    
+    Map map1;
+    
+    std::vector<std::vector<std::string>> tileMapGraphic = map1.tileMapGraphic;
 
         std::vector<std::vector<std::string>> tileMapCollision{
                 {" ", " "," ", " "," ", " "," ", " "," ", " "},
