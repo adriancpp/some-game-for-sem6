@@ -100,32 +100,12 @@ int main(int argc, char const *argv[])
         //game part -- move it to other file in future
         //map
     
-    Map map1;
     
+    //load maps
+    Map map1;
     std::vector<std::vector<std::string>> tileMapGraphic = map1.tileMapGraphic;
-
-        std::vector<std::vector<std::string>> tileMapCollision{
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " ","#", "#"},
-                {"#", "#","#", "#","#", " "," ", "#","#", "#"},
-                {"#", "#","#", "#","#", " ","#", "#","#", "#"},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "}
-        };
-
-        std::vector<std::vector<std::string>> tileMapObject{
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", "P"," ", " "," ", " "," ", " "," ", "o"},
-                {" ", " ","o", "o"," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "},
-                {" ", " "," ", " "," ", " "," ", " "," ", " "}
-        };
-
+    std::vector<std::vector<std::string>> tileMapCollision = map1.tileMapCollision;
+    std::vector<std::vector<std::string>> tileMapObject = map1.tileMapObject;
 
         //transformMapsIntoObjects
 
