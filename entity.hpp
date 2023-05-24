@@ -19,11 +19,12 @@ class Entity
 {
 public:
     Entity();
-    bool isCollision( SDL_Rect newCoordinates, std::vector<std::vector<std::string>> collisionMap );
-    void move();
-    
+    bool isCollision( SDL_Rect cord1, SDL_Rect cord2 );
+    Entity move(int x, int y);
+
 public:
     int id;
+
     int x, y, w, h;
     int speed;
     enum entityTypes
@@ -35,7 +36,21 @@ public:
     entityTypes entityType;
     std::string entityModel;
     SDL_Rect rectFrom;
-    
-};
+    SDL_Rect cord;
 
+    //physic
+    bool isFalling;
+    bool isRising;
+    bool isMovingRight;
+    bool isMovingLeft;
+    int maxJumpHeight;
+    int currentJumpHeigth;
+
+    //texture
+    bool faceRight;
+
+
+    int getX() const;
+    void setX(int newX);
+};
 #endif /* entity_hpp */

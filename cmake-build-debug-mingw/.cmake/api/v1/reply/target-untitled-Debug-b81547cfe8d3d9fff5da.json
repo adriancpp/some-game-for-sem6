@@ -59,11 +59,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2"
+					"path" : "C:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2"
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/LibSDL/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2"
+					"path" : "C:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2"
 				}
 			],
 			"language" : "CXX",
@@ -78,7 +78,8 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -97,17 +98,17 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\LibSDL\\MinGw\\SDL2-2.26.5\\x86_64-w64-mingw32\\lib\\libSDL2.dll.a",
+				"fragment" : "C:\\Users\\karga\\OneDrive\\Dokumenty\\codes\\github\\some-game-for-sem6\\MinGw\\SDL2-2.26.5\\x86_64-w64-mingw32\\lib\\libSDL2.dll.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\LibSDL\\MinGw\\SDL2-2.26.5\\x86_64-w64-mingw32\\lib\\libSDL2main.a",
+				"fragment" : "C:\\Users\\karga\\OneDrive\\Dokumenty\\codes\\github\\some-game-for-sem6\\MinGw\\SDL2-2.26.5\\x86_64-w64-mingw32\\lib\\libSDL2main.a",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\LibSDL\\MinGw\\SDL2_image-2.6.3\\x86_64-w64-mingw32\\lib\\libSDL2_image.dll.a",
+				"fragment" : "C:\\Users\\karga\\OneDrive\\Dokumenty\\codes\\github\\some-game-for-sem6\\MinGw\\SDL2_image-2.6.3\\x86_64-w64-mingw32\\lib\\libSDL2_image.dll.a",
 				"role" : "libraries"
 			},
 			{
@@ -131,7 +132,8 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -147,6 +149,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "entity.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "map.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
