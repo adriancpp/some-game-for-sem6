@@ -95,10 +95,6 @@ int main(int argc, char const *argv[])
     auto gem_Texture = load_texture(renderer_p, "Sprites/Items/gem/gem-1.png");
 
     SDL_Rect rect = {10, 10, 100, 100};
-
-
-        //game part -- move it to other file in future
-        //map
     
     
     //load maps
@@ -255,14 +251,17 @@ int main(int argc, char const *argv[])
     
     //fun
     bool gemGravity = false;
+    
+    //equip
     int collectedGems = 0;
     
-    //newTime
+    //time
     static const int fps = 60;
     float delay;
     int prev_tick;
     int ticks;
     int deltaTime;
+    
     //newPlayerVel
     float velY = 0;
     float velAddSpeed = 3;
@@ -282,8 +281,8 @@ int main(int argc, char const *argv[])
                     case SDL_KEYDOWN:
                         if(e.key.keysym.sym == SDLK_q)
                         {
-                            std::cout << "lag......" << std::endl;
-                            SDL_Delay(500);
+//                            std::cout << "lag......" << std::endl;
+//                            SDL_Delay(500);
                         }
                         else if(e.key.keysym.sym == SDLK_g)
                         {
@@ -300,7 +299,6 @@ int main(int argc, char const *argv[])
 
             if(key_state[SDL_SCANCODE_UP])
             {
-                //elementListObjects[playerId].cord.y -= 10;
                 if( elementListObjects[playerId].isFalling == false )
                 {
                     elementListObjects[playerId].isRising = true;
@@ -324,16 +322,12 @@ int main(int argc, char const *argv[])
                 if( velY < velMaxSpeed )
                 {
                     velY = velY + velAddSpeed;
-                    //velY = velY + 0.6;
                 }
                 elementListObjects[playerId].faceRight = true;
             }
             
-            
-            
             elementListObjects[playerId].cord.x += (int)velY;
-            velY = velY * 0.65; //0.95
-            //SDL_Delay(100);
+            velY = velY * 0.65;
 
                 //physic
                 {
@@ -396,9 +390,6 @@ int main(int argc, char const *argv[])
                                     gForceSpeed = 1;
                                     elementListObjects[playerId].isFalling = false;
                                 }
-                                
-                                
-                                
                             }
                             if(elementListObjects[i].entityModel == "gem" && gemGravity == true)
                             {
@@ -432,15 +423,6 @@ int main(int argc, char const *argv[])
                             }
                         }
                     }
-                    
-//                    if(elementListObjects[playerId].isMovingLeft)
-//                    {
-//                        int s = deltaTime*0.2;
-//
-//                        elementListObjects[playerId].faceRight = false;
-//                        elementListObjects[playerId].cord.x -= s;
-//                    }
-//                    lastUpdate = current;
                 }
                 
                 //collisions with object
@@ -461,7 +443,6 @@ int main(int argc, char const *argv[])
                 }
                 
                 SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
-
                 {
 
                     int w,h;
