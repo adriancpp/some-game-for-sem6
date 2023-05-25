@@ -52,14 +52,21 @@ build cmake_object_order_depends_target_untitled: phony || CMakeFiles/untitled.d
 build CMakeFiles/untitled.dir/main.cpp.obj: CXX_COMPILER__untitled_Debug C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/main.cpp || cmake_object_order_depends_target_untitled
   DEP_FILE = CMakeFiles\untitled.dir\main.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2 -IC:/LibSDL/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2
+  INCLUDES = -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2 -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2
   OBJECT_DIR = CMakeFiles\untitled.dir
   OBJECT_FILE_DIR = CMakeFiles\untitled.dir
 
 build CMakeFiles/untitled.dir/entity.cpp.obj: CXX_COMPILER__untitled_Debug C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/entity.cpp || cmake_object_order_depends_target_untitled
   DEP_FILE = CMakeFiles\untitled.dir\entity.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2 -IC:/LibSDL/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2
+  INCLUDES = -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2 -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2
+  OBJECT_DIR = CMakeFiles\untitled.dir
+  OBJECT_FILE_DIR = CMakeFiles\untitled.dir
+
+build CMakeFiles/untitled.dir/map.cpp.obj: CXX_COMPILER__untitled_Debug C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/map.cpp || cmake_object_order_depends_target_untitled
+  DEP_FILE = CMakeFiles\untitled.dir\map.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/include/SDL2 -IC:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/include/SDL2
   OBJECT_DIR = CMakeFiles\untitled.dir
   OBJECT_FILE_DIR = CMakeFiles\untitled.dir
 
@@ -71,9 +78,9 @@ build CMakeFiles/untitled.dir/entity.cpp.obj: CXX_COMPILER__untitled_Debug C$:/U
 #############################################
 # Link the executable untitled.exe
 
-build untitled.exe: CXX_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/main.cpp.obj CMakeFiles/untitled.dir/entity.cpp.obj | C$:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2.dll.a C$:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2main.a C$:/LibSDL/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/lib/libSDL2_image.dll.a
+build untitled.exe: CXX_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/main.cpp.obj CMakeFiles/untitled.dir/entity.cpp.obj CMakeFiles/untitled.dir/map.cpp.obj | C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2.dll.a C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2main.a C$:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/lib/libSDL2_image.dll.a
   FLAGS = -g
-  LINK_LIBRARIES = C:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2.dll.a  C:/LibSDL/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2main.a  C:/LibSDL/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/lib/libSDL2_image.dll.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = C:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2.dll.a  C:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2-2.26.5/x86_64-w64-mingw32/lib/libSDL2main.a  C:/Users/karga/OneDrive/Dokumenty/codes/github/some-game-for-sem6/MinGw/SDL2_image-2.6.3/x86_64-w64-mingw32/lib/libSDL2_image.dll.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\untitled.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
