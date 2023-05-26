@@ -21,6 +21,7 @@ public:
     Entity();
     bool isCollision( SDL_Rect cord1, SDL_Rect cord2 );
     Entity move(int x, int y);
+    Entity render();
     
 public:
     int id;
@@ -45,6 +46,8 @@ public:
     bool isMovingLeft;
     int maxJumpHeight;
     int currentJumpHeigth;
+    
+    std::shared_ptr<SDL_Texture> mainTexture;
     
     //texture
     bool faceRight;

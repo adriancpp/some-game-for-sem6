@@ -198,6 +198,7 @@ int main(int argc, char const *argv[])
                     newEntity.id = id;
                     newEntity.entityType = Entity::OBJECT;
                     newEntity.entityModel = "gem";
+                    newEntity.mainTexture = gem_Texture;
                     newEntity.cord = {
                         (column*64)+16,
                         (row*64)+16,
@@ -500,7 +501,7 @@ int main(int argc, char const *argv[])
                             }
                             if(elementListObjects[i].entityModel == "gem")
                             {
-                                SDL_RenderCopy(renderer_p.get(), gem_Texture.get(), nullptr, &elementListObjects[i].cord);
+                                SDL_RenderCopy(renderer_p.get(), elementListObjects[i].mainTexture.get(), nullptr, &elementListObjects[i].cord);
                             }
 
                         }

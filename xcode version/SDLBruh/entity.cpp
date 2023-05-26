@@ -49,3 +49,11 @@ Entity Entity::move(int x, int y)
     
     return *this;
 }
+
+Entity Entity::render()
+{
+    
+    
+    return *this;
+}
+
