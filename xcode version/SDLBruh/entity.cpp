@@ -50,10 +50,9 @@ Entity Entity::move(int x, int y)
     return *this;
 }
 
-Entity Entity::render()
+void Entity::render(SDL_Renderer *renderer_p, Entity entity)
 {
+    //SDL_RenderCopy(renderer_p->get(), entity.mainTexture.get(), nullptr, &entity.cord);
     
-    
-    return *this;
 }
 

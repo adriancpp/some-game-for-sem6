@@ -19,6 +19,8 @@ class Map
 {
 public:
     
+    void drawMap();
+    
     std::vector<std::vector<std::string>> tileMapGraphic{
             {" ", " "," ", " "," ", " "," ", " "," ", " "},
             {" ", " "," ", " "," ", " "," ", " "," ", " "},

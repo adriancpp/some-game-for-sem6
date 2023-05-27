@@ -6,3 +6,9 @@
 //
 
 #include "map.hpp"
+
+void Map::drawMap()
+{
+    
+    
+}
