@@ -21,7 +21,7 @@ public:
     Entity();
     bool isCollision( SDL_Rect cord1, SDL_Rect cord2 );
     Entity move(int x, int y);
-    void render(SDL_Renderer *renderer_p, Entity entity);
+    void render(std::shared_ptr<SDL_Renderer> *renderer_p);
     
 public:
     int id;

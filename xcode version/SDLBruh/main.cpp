@@ -501,7 +501,8 @@ int main(int argc, char const *argv[])
                             }
                             if(elementListObjects[i].entityModel == "gem")
                             {
-                                SDL_RenderCopy(renderer_p.get(), elementListObjects[i].mainTexture.get(), nullptr, &elementListObjects[i].cord);
+                                elementListObjects[i].render(&renderer_p);
+                                //SDL_RenderCopy(renderer_p.get(), elementListObjects[i].mainTexture.get(), nullptr, &elementListObjects[i].cord);
                             }
 
                         }
