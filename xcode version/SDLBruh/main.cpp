@@ -173,6 +173,7 @@ int main(int argc, char const *argv[])
                     newEntity.id = id;
                     newEntity.entityType = Entity::OBJECT;
                     newEntity.entityModel = "player";
+                    newEntity.mainTexture = player;
                     newEntity.faceRight = true;
                     newEntity.isMovingLeft = false;
                     newEntity.isMovingRight = false;
@@ -478,36 +479,11 @@ int main(int argc, char const *argv[])
                             }
                         }
                     }
-
+                    
+                    //draw entities
                     for(int i = 0; i < elementListObjects.size() ; i++)
-                    {
                         if(elementListObjects[i].entityType == Entity::OBJECT)
-                        {
-                                
-                            if(elementListObjects[i].entityModel == "player")
-                            {
-                                if(elementListObjects[i].faceRight == true)
-                                {
-                                    SDL_RendererFlip flipType = SDL_FLIP_NONE;
-                                    SDL_RenderCopyEx(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord, 0, NULL, flipType);
-                                }
-                                else
-                                {
-                                    SDL_RendererFlip flipType = SDL_FLIP_HORIZONTAL;
-                                    SDL_RenderCopyEx(renderer_p.get(), player.get(), nullptr, &elementListObjects[i].cord, 0, NULL, flipType);
-                                }
-                            
-                                
-                            }
-                            if(elementListObjects[i].entityModel == "gem")
-                            {
-                                elementListObjects[i].render(&renderer_p);
-                                //SDL_RenderCopy(renderer_p.get(), elementListObjects[i].mainTexture.get(), nullptr, &elementListObjects[i].cord);
-                            }
-
-                        }
-                    }
-        
+                            elementListObjects[i].render(&renderer_p);
 
                 }
                 

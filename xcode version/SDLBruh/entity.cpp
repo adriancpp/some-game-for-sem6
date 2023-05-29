@@ -52,7 +52,16 @@ Entity Entity::move(int x, int y)
 
 void Entity::render(std::shared_ptr<SDL_Renderer> *renderer_p)
 {
-    SDL_RenderCopy(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord);
-    
+    if(this->entityModel == "player")
+    {
+        if(this->faceRight == true)
+            SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord, 0, NULL, SDL_FLIP_NONE);
+        else
+            SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
+    else
+    {
+        SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord, 0, NULL, SDL_FLIP_NONE);
+    }
 }
 
