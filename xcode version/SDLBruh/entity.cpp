@@ -13,7 +13,7 @@
         // 3. if no collision then make move
 Entity::Entity()
 {
-    
+    this->rectFrom = {0,0,0,0};
 }
 
 bool Entity::isCollision( SDL_Rect cord1, SDL_Rect cord2 )
@@ -61,7 +61,10 @@ void Entity::render(std::shared_ptr<SDL_Renderer> *renderer_p)
     }
     else
     {
-        SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord, 0, NULL, SDL_FLIP_NONE);
+        if(SDL_RectEmpty(&this->rectFrom))
+            SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), nullptr, &this->cord, 0, NULL, SDL_FLIP_NONE);
+        else
+            SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), &this->rectFrom, &this->cord, 0, NULL, SDL_FLIP_NONE);
     }
 }
 

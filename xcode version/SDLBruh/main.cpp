@@ -93,9 +93,6 @@ int main(int argc, char const *argv[])
     auto background = load_texture(renderer_p, "Environment/back.png");
     auto envirnomentTileset = load_texture(renderer_p, "Environment/Tileset/tileset-sliced.png");
     auto gem_Texture = load_texture(renderer_p, "Sprites/Items/gem/gem-1.png");
-
-    SDL_Rect rect = {10, 10, 100, 100};
-    
     
     //load maps
     Map map1;
@@ -124,6 +121,13 @@ int main(int argc, char const *argv[])
                     newEntity.entityType = Entity::GRAPHIC;
                     newEntity.entityModel = "tile0";
                     newEntity.rectFrom = {16, (368-16)-336, 16, 16 };
+                    newEntity.mainTexture = envirnomentTileset;
+                    newEntity.cord = {
+                        column*64,
+                        row*64,
+                        64,
+                        64
+                    };
                     entities.push_back(newEntity);
                 }
                 else if(tileMapGraphic[row][column] == "W")
@@ -136,7 +140,14 @@ int main(int argc, char const *argv[])
                     newEntity.h = 64;
                     newEntity.entityType = Entity::GRAPHIC;
                     newEntity.entityModel = "tile1";
+                    newEntity.mainTexture = envirnomentTileset;
                     newEntity.rectFrom = {16+32, (368-16)-336, 16, 16 };
+                    newEntity.cord = {
+                        column*64,
+                        row*64,
+                        64,
+                        64
+                    };
                     entities.push_back(newEntity);
                 }
                 else if(tileMapGraphic[row][column] == "M")
@@ -149,7 +160,14 @@ int main(int argc, char const *argv[])
                     newEntity.h = 64;
                     newEntity.entityType = Entity::GRAPHIC;
                     newEntity.entityModel = "tile2";
+                    newEntity.mainTexture = envirnomentTileset;
                     newEntity.rectFrom = {16, (368-16)-336+32, 16, 16 };
+                    newEntity.cord = {
+                        column*64,
+                        row*64,
+                        64,
+                        64
+                    };
                     entities.push_back(newEntity);
                 }
                 id++;
@@ -445,46 +463,16 @@ int main(int argc, char const *argv[])
                 }
                 
                 SDL_RenderCopy(renderer_p.get(), background.get(), nullptr, nullptr);
+            
+                //middle
                 {
-
-                    int w,h;
-                    SDL_QueryTexture(clouds.get(),
-                                     NULL, NULL,
-                                     &w, &h);
-
-                    SDL_Rect clouds_rect = {rect.x/2 - 200, rect.y/2 -100,w,h };
-                    SDL_RenderCopy(renderer_p.get(), clouds.get(), nullptr, &clouds_rect);
-
-                    //middle
                     // tileset graph
-
                     for(int i = 0; i < entities.size() ; i++)
-                    {
-                        if(entities[i].entityType == Entity::GRAPHIC)
-                        {
-                            SDL_Rect envirnomentTileset_rect = {entities[i].x, entities[i].y,entities[i].w, entities[i].h };
-                        
-
-                            if(entities[i].entityModel == "tile0")
-                            {
-                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
-                            }
-                            if(entities[i].entityModel == "tile1")
-                            {
-                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
-                            }
-                            if(entities[i].entityModel == "tile2")
-                            {
-                                SDL_RenderCopy(renderer_p.get(), envirnomentTileset.get(), &entities[i].rectFrom, &envirnomentTileset_rect);
-                            }
-                        }
-                    }
+                        entities[i].render(&renderer_p);
                     
                     //draw entities
                     for(int i = 0; i < elementListObjects.size() ; i++)
-                        if(elementListObjects[i].entityType == Entity::OBJECT)
-                            elementListObjects[i].render(&renderer_p);
-
+                        elementListObjects[i].render(&renderer_p);
                 }
                 
                 // gui
