@@ -67,4 +67,3 @@ void Entity::render(std::shared_ptr<SDL_Renderer> *renderer_p)
             SDL_RenderCopyEx(renderer_p->get(), this->mainTexture.get(), &this->rectFrom, &this->cord, 0, NULL, SDL_FLIP_NONE);
     }
 }
-

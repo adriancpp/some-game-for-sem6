@@ -10,6 +10,7 @@
 		3A0264592A0A92DB004E963C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A0264582A0A92DB004E963C /* SDL2.framework */; };
 		3A02645A2A0A92DB004E963C /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A0264582A0A92DB004E963C /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3A039D7A2A0CC8C900BF9313 /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A039D782A0CC8C900BF9313 /* entity.cpp */; };
+		3A3707572A28A08E00B5D7FA /* gem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A3707552A28A08E00B5D7FA /* gem.cpp */; };
 		3A538CB32A0B8C7A0065958E /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A538CB22A0B8C7A0065958E /* SDL2_image.framework */; };
 		3A538CB42A0B8C7A0065958E /* SDL2_image.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3A538CB22A0B8C7A0065958E /* SDL2_image.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3A538CCA2A0B92320065958E /* Scenes in Resources */ = {isa = PBXBuildFile; fileRef = 3A538CC42A0B92320065958E /* Scenes */; };
@@ -63,6 +64,8 @@
 		3A0264582A0A92DB004E963C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		3A039D782A0CC8C900BF9313 /* entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
 		3A039D792A0CC8C900BF9313 /* entity.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = entity.hpp; sourceTree = "<group>"; };
+		3A3707552A28A08E00B5D7FA /* gem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gem.cpp; sourceTree = "<group>"; };
+		3A3707562A28A08E00B5D7FA /* gem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gem.hpp; sourceTree = "<group>"; };
 		3A538CB22A0B8C7A0065958E /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_image.framework; sourceTree = "<group>"; };
 		3A538CC42A0B92320065958E /* Scenes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Scenes; path = assets/Scenes; sourceTree = SOURCE_ROOT; };
 		3A538CC52A0B92320065958E /* Sprites */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Sprites; path = assets/Sprites; sourceTree = SOURCE_ROOT; };
@@ -121,6 +124,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3A3707542A28A04F00B5D7FA /* entity */ = {
+			isa = PBXGroup;
+			children = (
+				3A3707552A28A08E00B5D7FA /* gem.cpp */,
+				3A3707562A28A08E00B5D7FA /* gem.hpp */,
+			);
+			name = entity;
+			sourceTree = "<group>";
+		};
 		3A538CC32A0B921B0065958E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +170,7 @@
 		3AD939D92A0A90910082C023 /* SDLBruh */ = {
 			isa = PBXGroup;
 			children = (
+				3A3707542A28A04F00B5D7FA /* entity */,
 				3A538CC32A0B921B0065958E /* Assets */,
 				3AD939DD2A0A90910082C023 /* ViewController.h */,
 				3AD939DE2A0A90910082C023 /* ViewController.m */,
@@ -326,6 +339,7 @@
 			files = (
 				3AD93A0A2A0A91A50082C023 /* main.cpp in Sources */,
 				3A039D7A2A0CC8C900BF9313 /* entity.cpp in Sources */,
+				3A3707572A28A08E00B5D7FA /* gem.cpp in Sources */,
 				3AF732E12A18CB750033897C /* map.cpp in Sources */,
 				3AD939DF2A0A90910082C023 /* ViewController.m in Sources */,
 			);
